@@ -627,7 +627,14 @@
       if (stepNum <= 3) document.getElementById(`step-nav-${stepNum}`)?.classList.add('active');
       else document.getElementById(`step-nav-3`)?.classList.add('active');
 
-      if (stepNum === 3) populatePastPlayers();
+      if (stepNum === 2) {
+        setTimeout(() => {
+          updateScanScreenSize();
+          renderScanFrame();
+        }, 80);
+      } else if (stepNum === 3) {
+        populatePastPlayers();
+      }
     }
 
     function initMediaPipe() {
@@ -725,8 +732,9 @@
       const topY = b.y + tuneRuler.topYNorm * b.h;
       const bottomY = b.y + tuneRuler.bottomYNorm * b.h;
       const centerX = b.x + tuneRuler.centerXNorm * b.w;
-      const barWidth = 45;
+      const barWidth = 50;
 
+      // 中心縦ライン
       scanCtx.strokeStyle = "rgba(56, 189, 248, 0.4)";
       scanCtx.lineWidth = 3;
       scanCtx.beginPath();
@@ -734,29 +742,108 @@
       scanCtx.lineTo(centerX, bottomY);
       scanCtx.stroke();
 
-      // 頭バー
+      // 頭バー（青）
       scanCtx.strokeStyle = "#38bdf8";
-      scanCtx.lineWidth = 3;
+      scanCtx.lineWidth = 3.5;
       scanCtx.beginPath();
       scanCtx.moveTo(centerX - barWidth, topY);
       scanCtx.lineTo(centerX + barWidth, topY);
       scanCtx.stroke();
+      
       scanCtx.fillStyle = "#38bdf8";
       scanCtx.beginPath();
-      scanCtx.arc(centerX, topY, 9, 0, Math.PI * 2);
+      scanCtx.arc(centerX, topY, 11, 0, Math.PI * 2);
       scanCtx.fill();
+      scanCtx.strokeStyle = "#ffffff";
+      scanCtx.lineWidth = 2;
+      scanCtx.stroke();
 
-      // 地面バー
+      scanCtx.fillStyle = "#ffffff";
+      scanCtx.font = "bold 10px sans-serif";
+      scanCtx.textAlign = "center";
+      scanCtx.fillText("👑 あたま ↕", centerX, topY - 14);
+
+      // 地面バー（赤）
       scanCtx.strokeStyle = "#f43f5e";
-      scanCtx.lineWidth = 3;
+      scanCtx.lineWidth = 3.5;
       scanCtx.beginPath();
       scanCtx.moveTo(centerX - barWidth, bottomY);
       scanCtx.lineTo(centerX + barWidth, bottomY);
       scanCtx.stroke();
+
       scanCtx.fillStyle = "#f43f5e";
       scanCtx.beginPath();
-      scanCtx.arc(centerX, bottomY, 9, 0, Math.PI * 2);
+      scanCtx.arc(centerX, bottomY, 11, 0, Math.PI * 2);
       scanCtx.fill();
+      scanCtx.strokeStyle = "#ffffff";
+      scanCtx.lineWidth = 2;
+      scanCtx.stroke();
+
+      scanCtx.fillStyle = "#ffffff";
+      scanCtx.fillText("👟 じめん ↕", centerX, bottomY + 18);
+    }
+
+    // キャンバス座標変換
+    function getCanvasPoint(evt, canvas) {
+      const rect = canvas.getBoundingClientRect();
+      const clientX = evt.touches ? evt.touches[0].clientX : evt.clientX;
+      const clientY = evt.touches ? evt.touches[0].clientY : evt.clientY;
+      return {
+        x: (clientX - rect.left) * (canvas.width / rect.width),
+        y: (clientY - rect.top) * (canvas.height / rect.height)
+      };
+    }
+
+    // スキャン定規ドラッグ操作
+    function onScanPointerDown(e) {
+      if (!tuneRuler.isActive) return;
+      const pt = getCanvasPoint(e, scanCanvas);
+      const b = getAspectFitBounds(videoElement.videoWidth, videoElement.videoHeight, scanCanvas.width, scanCanvas.height);
+
+      const topY = b.y + tuneRuler.topYNorm * b.h;
+      const bottomY = b.y + tuneRuler.bottomYNorm * b.h;
+      const centerX = b.x + tuneRuler.centerXNorm * b.w;
+      const tol = 36; // 指先でも掴みやすい許容範囲
+
+      if (Math.abs(pt.y - topY) <= tol && Math.abs(pt.x - centerX) <= 75) {
+        activeDragHandle = 'top';
+      } else if (Math.abs(pt.y - bottomY) <= tol && Math.abs(pt.x - centerX) <= 75) {
+        activeDragHandle = 'bottom';
+      } else if (pt.y > topY && pt.y < bottomY && Math.abs(pt.x - centerX) <= 45) {
+        activeDragHandle = 'both';
+      }
+
+      if (activeDragHandle) {
+        dragStartY = pt.y;
+        snapTop = tuneRuler.topYNorm;
+        snapBottom = tuneRuler.bottomYNorm;
+        if (e.cancelable) e.preventDefault();
+      }
+    }
+
+    function onScanPointerMove(e) {
+      if (!activeDragHandle || !tuneRuler.isActive) return;
+      const pt = getCanvasPoint(e, scanCanvas);
+      const b = getAspectFitBounds(videoElement.videoWidth, videoElement.videoHeight, scanCanvas.width, scanCanvas.height);
+      const dNormY = (pt.y - dragStartY) / b.h;
+
+      if (activeDragHandle === 'top') {
+        tuneRuler.topYNorm = Math.min(tuneRuler.bottomYNorm - 0.1, Math.max(0.01, snapTop + dNormY));
+      } else if (activeDragHandle === 'bottom') {
+        tuneRuler.bottomYNorm = Math.max(tuneRuler.topYNorm + 0.1, Math.min(0.99, snapBottom + dNormY));
+      } else if (activeDragHandle === 'both') {
+        const heightNorm = snapBottom - snapTop;
+        const newTop = Math.max(0.01, Math.min(0.99 - heightNorm, snapTop + dNormY));
+        tuneRuler.topYNorm = newTop;
+        tuneRuler.bottomYNorm = newTop + heightNorm;
+      }
+
+      if (e.cancelable) e.preventDefault();
+      renderScanFrame();
+    }
+
+    function onScanPointerUp() {
+      activeDragHandle = null;
     }
 
     function processSingleFrame() {
@@ -799,7 +886,7 @@
             tuneRuler.centerXNorm = NOSE.x;
 
             document.getElementById('btn-scan-next-step').style.display = 'block';
-            document.getElementById('scan-guide-text').innerHTML = "🎯 <b>姿勢スキャン成功！</b> 丸いハンドルで位置を微調整して次へ進もう！";
+            document.getElementById('scan-guide-text').innerHTML = "🎯 <b>姿勢スキャン成功！</b> 丸いハンドルを上下にドラッグして微調整できるよ！";
             renderScanFrame();
             showToast("✅ 全身を検知しました！");
           }
@@ -1108,6 +1195,33 @@
       } catch(e) {}
 
       updateCardLabels();
+
+      // スキャン定規のドラッグイベント登録
+      scanCanvas.addEventListener('mousedown', onScanPointerDown);
+      window.addEventListener('mousemove', onScanPointerMove);
+      window.addEventListener('mouseup', onScanPointerUp);
+
+      scanCanvas.addEventListener('touchstart', onScanPointerDown, { passive: false });
+      window.addEventListener('touchmove', onScanPointerMove, { passive: false });
+      window.addEventListener('touchend', onScanPointerUp);
+      window.addEventListener('touchcancel', onScanPointerUp);
+
+      // スキャンシークバー
+      document.getElementById('scan-seek-bar').addEventListener('input', (e) => {
+        if (!Number.isFinite(videoElement.duration) || videoElement.duration === 0) return;
+        videoElement.currentTime = (e.target.value / 100) * videoElement.duration;
+        renderScanFrame();
+      });
+
+      document.getElementById('btn-scan-prev').addEventListener('click', () => {
+        videoElement.currentTime = Math.max(0, videoElement.currentTime - 0.033);
+        renderScanFrame();
+      });
+
+      document.getElementById('btn-scan-next').addEventListener('click', () => {
+        videoElement.currentTime = Math.min(videoElement.duration || 0, videoElement.currentTime + 0.033);
+        renderScanFrame();
+      });
 
       // 動画インプット
       document.getElementById('video-input-side').addEventListener('change', function(e) {
