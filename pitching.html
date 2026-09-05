@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-  <title>投球・送球AIバイオメカニクス</title>
+  <title>投球・送球AIバイオメカニクス - 身体弱点診断</title>
   <script src="https://cdn.tailwindcss.com"></script>
   
   <!-- MediaPipe CDN -->
@@ -22,13 +22,9 @@
       --card-border: #1e3a5f;
       --sky-primary: #0284c7;
       --sky-light: #38bdf8;
-      --sky-shadow: #0369a1;
       --gold-primary: #f59e0b;
-      --gold-shadow: #b45309;
       --emerald-primary: #10b981;
-      --emerald-shadow: #047857;
       --rose-primary: #f43f5e;
-      --rose-shadow: #be123c;
     }
 
     * {
@@ -189,12 +185,34 @@
       flex-direction: column;
       gap: 1px;
       box-shadow: 0 2px 0 #09101f;
+      cursor: pointer;
+      transition: transform 0.1s ease, border-color 0.1s ease;
     }
+
+    .metric-card:active {
+      transform: scale(0.97);
+      border-color: #38bdf8;
+    }
+
+    .body-tag {
+      font-size: 0.58rem;
+      padding: 1px 4px;
+      border-radius: 4px;
+      font-weight: 900;
+      display: inline-block;
+      width: fit-content;
+      line-height: 1.1;
+    }
+
+    .tag-balance { background: rgba(14, 165, 233, 0.25); color: #38bdf8; border: 1px solid rgba(56, 189, 248, 0.5); }
+    .tag-flex { background: rgba(245, 158, 11, 0.25); color: #fbbf24; border: 1px solid rgba(251, 191, 36, 0.5); }
+    .tag-spring { background: rgba(249, 115, 22, 0.25); color: #fb923c; border: 1px solid rgba(251, 146, 60, 0.5); }
+    .tag-schema { background: rgba(168, 85, 247, 0.25); color: #c084fc; border: 1px solid rgba(192, 132, 252, 0.5); }
 
     .modal-overlay {
       position: fixed;
       inset: 0;
-      background: rgba(5, 9, 18, 0.85);
+      background: rgba(5, 9, 18, 0.88);
       backdrop-filter: blur(5px);
       display: none;
       align-items: center;
@@ -243,7 +261,7 @@
         🏠 ホーム
       </a>
       <h1 class="text-sm font-black text-sky-300 flex items-center gap-1">
-        ⚾ 投球・送球AIバイオメカニクス 🎯
+        ⚾ 投球・送球 身体弱点スキャナー 🎯
       </h1>
       <button id="btn-open-carte-header" class="btn-3d px-2.5 py-1 rounded-full bg-slate-800 border border-slate-600 text-amber-400 text-xs font-black">
         📋 履歴
@@ -261,17 +279,21 @@
     
     <!-- STEP 1: 動画選択 -->
     <section id="view-step1" class="view-section active">
-      <div class="flex flex-col gap-2.5 w-full flex-1 justify-center">
+      <div class="flex flex-col gap-2 w-full flex-1 justify-center">
         <!-- 横向き撮影 -->
         <label for="video-input-side" class="mode-card border-sky-500">
           <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-sky-400 to-blue-600 flex items-center justify-center text-2xl flex-shrink-0 shadow-md">
             ⚾
           </div>
           <div class="flex flex-col text-left flex-1 min-w-0">
-            <span class="text-sm font-black text-white">横向き（側方）動画を解析</span>
+            <div class="flex items-center justify-between">
+              <span class="text-sm font-black text-white">横向き（側方）動画を解析</span>
+              <span class="text-[9px] bg-sky-900/80 text-sky-300 px-1.5 py-0.5 rounded font-bold">基本推奨</span>
+            </div>
             <span class="text-[10px] text-sky-200 font-bold leading-tight mt-0.5">
               軸足バランス・前膝ブレーキ壁・体幹前傾・リリース高
             </span>
+            <span class="text-[9px] text-amber-300 mt-1 font-black">➔ ⚖️バランス・🦘瞬発力・🦴柔軟性を診断</span>
           </div>
           <input type="file" id="video-input-side" accept="video/*" class="hidden">
         </label>
@@ -286,17 +308,20 @@
             <span class="text-[10px] text-emerald-200 font-bold leading-tight mt-0.5">
               目線左右ブレ・骨盤傾斜・ステップ踏み出しズレ
             </span>
+            <span class="text-[9px] text-amber-300 mt-1 font-black">➔ 🧠身体図式・⚖️骨盤水平支持力を診断</span>
           </div>
           <input type="file" id="video-input-front" accept="video/*" class="hidden">
         </label>
       </div>
 
-      <div class="w-full p-2 bg-slate-950/80 border border-sky-500/40 rounded-xl text-center text-[11px] text-sky-200 font-bold">
-        💡 <b>高精度判定のコツ:</b> 脚上げからリリース・フォロースルーまで全身が収まった動画を選んでね！
+      <!-- 身体4大弱点連携バナー -->
+      <div class="w-full p-2 bg-slate-950/80 border border-sky-500/40 rounded-xl flex items-center justify-between text-[10px] text-sky-200 font-bold">
+        <span>💡 フォームの欠点から【身体の根本原因】を暴くよ！</span>
+        <a href="body_tests.html" class="text-amber-400 font-black underline">身体テストへ ➔</a>
       </div>
 
       <button id="btn-open-carte-top" class="btn-3d w-full py-2.5 rounded-xl bg-gradient-to-r from-amber-500 to-yellow-500 text-slate-950 font-black text-xs shadow-md border-2 border-white">
-        🏆 保存した投球カルテ・測定履歴を見る
+        🏆 保存した投球カルテ・弱点診断履歴を見る
       </button>
     </section>
 
@@ -375,39 +400,54 @@
 
     <!-- STEP 4: 5大キネティックチェーン ダッシュボード & 解析ワークスペース -->
     <section id="view-step4" class="view-section">
-      <!-- 5大指標メーターパネル -->
+      <!-- 5大指標メーターパネル（身体4大エンジン弱点タグ付き） -->
       <div class="dashboard">
-        <!-- 0: 軸足バランス -->
-        <div class="metric-card">
-          <span class="text-[10px] font-black text-sky-300 truncate" id="m0-title">⚖️ 軸足バランス</span>
+        <!-- 0: 軸足バランス ➔ ⚖️ バランス能力 / 🧠 身体図式 -->
+        <div class="metric-card" onclick="showTargetTestModal('balance')">
+          <div class="flex items-center justify-between">
+            <span class="text-[10px] font-black text-sky-300 truncate" id="m0-title">⚖️ 軸足バランス</span>
+            <span class="body-tag tag-balance">⚖️ バランス</span>
+          </div>
           <span class="text-sm font-black text-amber-400 leading-tight" id="m0-val">-- °</span>
           <span class="text-[9px] text-slate-400" id="m0-sub">トップ時: --</span>
         </div>
 
-        <!-- 1: 捻転差タメ -->
-        <div class="metric-card">
-          <span class="text-[10px] font-black text-sky-300 truncate" id="m1-title">🔄 捻転差 (タメ)</span>
+        <!-- 1: 捻転差タメ ➔ 🦴 柔軟性 (胸椎回旋) -->
+        <div class="metric-card" onclick="showTargetTestModal('flex')">
+          <div class="flex items-center justify-between">
+            <span class="text-[10px] font-black text-sky-300 truncate" id="m1-title">🔄 捻転差 (タメ)</span>
+            <span class="body-tag tag-flex">🦴 柔軟性</span>
+          </div>
           <span class="text-sm font-black text-amber-400 leading-tight" id="m1-val">--</span>
           <span class="text-[9px] text-slate-400" id="m1-sub">接地時判定: --</span>
         </div>
 
-        <!-- 2: 前膝ブレーキ壁 -->
-        <div class="metric-card">
-          <span class="text-[10px] font-black text-sky-300 truncate" id="m2-title">🦵 前膝ブレーキ壁</span>
+        <!-- 2: 前膝ブレーキ壁 ➔ 🦘 瞬発力 (地面反力) -->
+        <div class="metric-card" onclick="showTargetTestModal('spring')">
+          <div class="flex items-center justify-between">
+            <span class="text-[10px] font-black text-sky-300 truncate" id="m2-title">🦵 前膝ブレーキ壁</span>
+            <span class="body-tag tag-spring">🦘 瞬発力</span>
+          </div>
           <span class="text-sm font-black text-amber-400 leading-tight" id="m2-val">-- °</span>
           <span class="text-[9px] text-slate-400" id="m2-sub">伸展変化: -- °</span>
         </div>
 
-        <!-- 3: 体幹前傾 -->
-        <div class="metric-card">
-          <span class="text-[10px] font-black text-sky-300 truncate" id="m3-title">📐 体幹前傾 (しなり)</span>
+        <!-- 3: 体幹前傾 ➔ 🦴 柔軟性 (股関節ヒンジ) -->
+        <div class="metric-card" onclick="showTargetTestModal('flex')">
+          <div class="flex items-center justify-between">
+            <span class="text-[10px] font-black text-sky-300 truncate" id="m3-title">📐 体幹前傾 (しなり)</span>
+            <span class="body-tag tag-flex">🦴 柔軟性</span>
+          </div>
           <span class="text-sm font-black text-amber-400 leading-tight" id="m3-val">-- °</span>
           <span class="text-[9px] text-slate-400" id="m3-sub">リリース時: -- °</span>
         </div>
 
-        <!-- 4: リリース高 / ステップ幅 -->
-        <div class="metric-card col-span-2 sm:col-span-1">
-          <span class="text-[10px] font-black text-sky-300 truncate" id="m4-title">💥 リリース高 / 歩幅</span>
+        <!-- 4: リリース高 / ステップ幅 ➔ 🧠 身体図式 (空間認識) -->
+        <div class="metric-card col-span-2 sm:col-span-1" onclick="showTargetTestModal('schema')">
+          <div class="flex items-center justify-between">
+            <span class="text-[10px] font-black text-sky-300 truncate" id="m4-title">💥 リリース高 / 歩幅</span>
+            <span class="body-tag tag-schema">🧠 身体図式</span>
+          </div>
           <span class="text-sm font-black text-amber-400 leading-tight" id="m4-val">-- cm</span>
           <span class="text-[9px] text-slate-400" id="m4-sub">ステップ: -- cm (0%)</span>
         </div>
@@ -432,8 +472,8 @@
       </div>
 
       <!-- 操作ボタン & 再生バー -->
-      <div class="w-full flex flex-col gap-1.5 z-10 flex-shrink-0">
-        <div class="w-full flex items-center gap-2 bg-slate-950 px-2 py-1 rounded-lg border border-slate-700">
+      <div class="w-full flex flex-col gap-1 z-10 flex-shrink-0">
+        <div class="w-full flex items-center gap-2 bg-slate-950 px-2 py-0.5 rounded-lg border border-slate-700">
           <input type="range" id="seek-bar" class="w-full h-2 accent-sky-500 cursor-pointer" value="0" min="0" max="100" step="0.001">
           <span id="time-disp" class="text-[10px] font-mono text-sky-400 font-black min-w-[55px] text-right">0.00 / 0.00</span>
         </div>
@@ -465,11 +505,11 @@
 
   </main>
 
-  <!-- 📋 投球カルテモーダル -->
+  <!-- 📋 投球カルテモーダル（弱点特定 ＆ 身体テスト直結クエスト） -->
   <div id="carte-modal" class="modal-overlay" onclick="closeModalOnBackdrop(event, 'carte-modal')">
-    <div class="brawl-panel p-3 max-w-sm w-full bg-slate-900 border-sky-500 flex flex-col max-h-[86dvh] gap-2">
+    <div class="brawl-panel p-3 max-w-sm w-full bg-slate-900 border-sky-500 flex flex-col max-h-[88dvh] gap-2">
       <div class="flex items-center justify-between border-b border-slate-700 pb-1.5">
-        <h3 class="font-black text-sky-400 text-xs">📋 投球・送球バイオメカニクス カルテ</h3>
+        <h3 class="font-black text-sky-400 text-xs">📋 投球カルテ ＆ 身体4大弱点診断</h3>
         <button onclick="closeModal('carte-modal')" class="text-slate-400 hover:text-white font-black text-sm">✕</button>
       </div>
 
@@ -480,6 +520,38 @@
       </div>
 
       <div id="carte-history-list" class="flex-1 overflow-y-auto space-y-2 pr-1 text-xs"></div>
+    </div>
+  </div>
+
+  <!-- 💡 身体弱点ピンポイント処方モーダル -->
+  <div id="weakness-modal" class="modal-overlay" onclick="closeModalOnBackdrop(event, 'weakness-modal')">
+    <div class="brawl-panel p-4 max-w-sm w-full bg-slate-900 border-amber-500 space-y-3">
+      <div class="flex items-center gap-2 border-b border-slate-700 pb-2">
+        <span id="weak-icon" class="text-2xl">⚖️</span>
+        <div>
+          <h3 id="weak-title" class="font-black text-amber-400 text-sm">--</h3>
+          <span class="text-[10px] text-slate-400">投球エラーの根本原因</span>
+        </div>
+      </div>
+      <div class="space-y-2 text-xs leading-relaxed text-slate-200">
+        <div class="p-2.5 bg-slate-950 rounded-lg border border-slate-800">
+          <p class="font-bold text-sky-300 text-[11px]">投球で起きているエラー：</p>
+          <p id="weak-error-desc" class="text-amber-200 text-xs mt-0.5">--</p>
+        </div>
+        <div class="p-2.5 bg-sky-950/40 rounded-lg border border-sky-800/40">
+          <p class="font-bold text-emerald-400 text-[11px]">🎯 処方される身体テスト＆1分ドリル：</p>
+          <p id="weak-test-name" class="text-slate-200 font-black mt-0.5">--</p>
+          <p id="weak-test-effect" class="text-[10px] text-slate-300 mt-1">--</p>
+        </div>
+      </div>
+      <div class="flex gap-2">
+        <button onclick="closeModal('weakness-modal')" class="flex-1 py-2 bg-slate-800 text-slate-300 font-bold rounded-xl text-xs active:scale-95">
+          とじる
+        </button>
+        <a id="btn-go-body-test" href="body_tests.html" class="flex-[1.6] btn-3d py-2 bg-gradient-to-r from-emerald-500 to-teal-600 text-slate-950 font-black rounded-xl text-xs shadow-md no-underline">
+          💥 測定＆1分トレへGO!
+        </a>
+      </div>
     </div>
   </div>
 
@@ -507,7 +579,6 @@
     let pose = null;
     let isPoseLoaded = false;
     let isProcessing = false;
-    let animationFrameId = null;
     let scanModeActive = false;
 
     let playerName = "タイガ";
@@ -531,11 +602,6 @@
     // ズーム・パン
     let zoomScale = 1.0;
     let zoomPan = { x: 0, y: 0 };
-    let initialPinchDistance = 0;
-    let initialZoomScale = 1.0;
-    let isPanning = false;
-    let panStart = { x: 0, y: 0 };
-    let panSnapshot = { x: 0, y: 0 };
 
     // リアルタイム計算状態
     let currentState = {
@@ -563,7 +629,38 @@
       maxHeadShiftCm: 0
     };
 
-    // 音声コンテキスト
+    // 身体4大弱点とテストの辞書
+    const WEAKNESS_MAP = {
+      balance: {
+        icon: "⚖️",
+        title: "バランス能力（軸足の土台・支持力）",
+        error: "脚上げ時の一本足で骨盤が水平を保てず、体がグラついています。このままだと体重移動がブレて手投げになります。",
+        testName: "⚓ 目隠し片足立ちキープテスト",
+        testEffect: "軸足の足裏アーチとお尻（中殿筋）を目覚めさせ、どんな球でも崩れない投球軸を作ります。"
+      },
+      flex: {
+        icon: "🏹",
+        title: "柔軟性・関節可動域（胸椎・股関節ヒンジ）",
+        error: "胸と腰の捻転差が作れず同時回りになっている、または体幹が起き上がってムチのようなしなりが使えていません。",
+        testName: "四つ這い胸椎回旋テスト ＆ 股関節ヒンジ",
+        testEffect: "背骨と股関節のロックを解除し、低めに糸を引く伸びやかな剛速球を生み出します。"
+      },
+      spring: {
+        icon: "🦘",
+        title: "瞬発力・地面反力（前膝ブロックバネ）",
+        error: "着地した前足の膝が曲がったまま潰れ、せっかく助走で溜めたエネルギーが地面に逃げてしまっています。",
+        testName: "沈み込み垂直跳びテスト ＆ 前足ストップドリル",
+        testEffect: "前足でガツンと急ブレーキをかけて回転を最大加速させ、指先への初速を爆発させます。"
+      },
+      schema: {
+        icon: "🧠",
+        title: "身体図式・ボディイメージ（脳内空間GPS）",
+        error: "リリースポイントが毎球バラついている、または頭が前に大きく突っ込んで目線が上下左右に揺れています。",
+        testName: "👣 目隠し足踏みズレテスト",
+        testEffect: "脳内の重心感覚と空間認識をリセットし、思い通りのリリース高と針の穴を通す制球力を手に入れます。"
+      }
+    };
+
     let audioCtx = null;
     function getAudioContext() {
       if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -646,7 +743,7 @@
       });
 
       pose.setOptions({
-        modelComplexity: 1, // スマホの負荷軽減
+        modelComplexity: 1,
         smoothLandmarks: true,
         enableSegmentation: false,
         minDetectionConfidence: 0.2,
@@ -783,7 +880,6 @@
       scanCtx.fillText("👟 じめん ↕", centerX, bottomY + 18);
     }
 
-    // キャンバス座標変換
     function getCanvasPoint(evt, canvas) {
       const rect = canvas.getBoundingClientRect();
       const clientX = evt.touches ? evt.touches[0].clientX : evt.clientX;
@@ -794,7 +890,6 @@
       };
     }
 
-    // スキャン定規ドラッグ操作
     function onScanPointerDown(e) {
       if (!tuneRuler.isActive) return;
       const pt = getCanvasPoint(e, scanCanvas);
@@ -803,7 +898,7 @@
       const topY = b.y + tuneRuler.topYNorm * b.h;
       const bottomY = b.y + tuneRuler.bottomYNorm * b.h;
       const centerX = b.x + tuneRuler.centerXNorm * b.w;
-      const tol = 36; // 指先でも掴みやすい許容範囲
+      const tol = 36;
 
       if (Math.abs(pt.y - topY) <= tol && Math.abs(pt.x - centerX) <= 75) {
         activeDragHandle = 'top';
@@ -886,7 +981,7 @@
             tuneRuler.centerXNorm = NOSE.x;
 
             document.getElementById('btn-scan-next-step').style.display = 'block';
-            document.getElementById('scan-guide-text').innerHTML = "🎯 <b>姿勢スキャン成功！</b> 丸いハンドルを上下にドラッグして微調整できるよ！";
+            document.getElementById('scan-guide-text').innerHTML = "🎯 <b>スキャン成功！</b> 丸ハンドルで微調整して次へ進もう！";
             renderScanFrame();
             showToast("✅ 全身を検知しました！");
           }
@@ -910,34 +1005,25 @@
         const l = results.poseLandmarks;
         const isRightPitcher = (selectedArmSide === 'RIGHT');
 
-        // 基準身長ピクセル
         const normH = (tuneRuler.bottomYNorm - tuneRuler.topYNorm) > 0.1 ? (tuneRuler.bottomYNorm - tuneRuler.topYNorm) : 0.75;
         const activePxPerCm = (normH * b.h) / userHeightCm;
 
-        // 関節定義
-        const NOSE = l[0];
         const L_SHOULDER = l[11], R_SHOULDER = l[12];
         const L_ELBOW = l[13], R_ELBOW = l[14];
         const L_WRIST = l[15], R_WRIST = l[16];
         const L_HIP = l[23], R_HIP = l[24];
         const L_KNEE = l[25], R_KNEE = l[26];
         const L_ANKLE = l[27], R_ANKLE = l[28];
-        const L_HEEL = l[29], R_HEEL = l[30];
 
-        // 投球腕・前足・軸足の分離
         const throwWrist = isRightPitcher ? R_WRIST : L_WRIST;
-        const throwElbow = isRightPitcher ? R_ELBOW : L_ELBOW;
         const frontKnee = isRightPitcher ? L_KNEE : R_KNEE;
         const frontHip = isRightPitcher ? L_HIP : R_HIP;
         const frontAnkle = isRightPitcher ? L_ANKLE : R_ANKLE;
-        const pivotHip = isRightPitcher ? R_HIP : L_HIP;
-        const pivotKnee = isRightPitcher ? R_KNEE : L_KNEE;
         const pivotAnkle = isRightPitcher ? R_ANKLE : L_ANKLE;
 
-        // 骨格オーバーレイ
         if (isSkeletonVisible) drawPitchingSkeleton(l, b.x, b.y, b.w, b.h, isRightPitcher);
 
-        // ⓪ 軸足バランス（脚上げ時の骨盤傾き・軸安定度）
+        // ⓪ 軸足バランス（脚上げ時の骨盤傾き）➔ ⚖️ バランス
         if (L_HIP && R_HIP) {
           const hipDx = (L_HIP.x - R_HIP.x) * b.w;
           const hipDy = (L_HIP.y - R_HIP.y) * b.h;
@@ -946,7 +1032,7 @@
           document.getElementById('m0-val').textContent = `${tiltAngle} °`;
         }
 
-        // ① 捻転差判定（胸と腰の角度差）
+        // ① 捻転差判定 ➔ 🦴 柔軟性
         if (L_SHOULDER && R_SHOULDER && L_HIP && R_HIP) {
           const sDx = (L_SHOULDER.x - R_SHOULDER.x), sDz = ((L_SHOULDER.z || 0) - (R_SHOULDER.z || 0));
           const hDx = (L_HIP.x - R_HIP.x), hDz = ((L_HIP.z || 0) - (R_HIP.z || 0));
@@ -962,7 +1048,7 @@
           document.getElementById('m1-val').textContent = twistLabel.split(' ')[0];
         }
 
-        // ② 前膝ブレーキ量（接地時の屈曲からの伸展変化）
+        // ② 前膝ブレーキ量 ➔ 🦘 瞬発力
         if (frontHip && frontKnee && frontAnkle) {
           const rawAngle = calcJointAngle3D(frontHip, frontKnee, frontAnkle);
           if (Number.isFinite(rawAngle) && rawAngle >= 50 && rawAngle <= 180) {
@@ -971,7 +1057,7 @@
           }
         }
 
-        // ③ 体幹前傾角度（リリース時の上体の倒れ込み）
+        // ③ 体幹前傾角度 ➔ 🦴 柔軟性
         if (L_SHOULDER && R_SHOULDER && L_HIP && R_HIP) {
           const midS = { x: (L_SHOULDER.x + R_SHOULDER.x)/2, y: (L_SHOULDER.y + R_SHOULDER.y)/2 };
           const midH = { x: (L_HIP.x + R_HIP.x)/2, y: (L_HIP.y + R_HIP.y)/2 };
@@ -982,14 +1068,13 @@
           }
         }
 
-        // ④ リリース高 ＆ ステップ幅
+        // ④ リリース高 ＆ 歩幅 ➔ 🧠 身体図式
         if (throwWrist && frontAnkle && pivotAnkle) {
           const groundY = Math.max(frontAnkle.y, pivotAnkle.y) * b.h;
           const rHeightCm = Math.round(Math.max(0, groundY - throwWrist.y * b.h) / activePxPerCm);
           currentState.releaseHeightCm = rHeightCm;
           document.getElementById('m4-val').textContent = `${rHeightCm} cm`;
 
-          // ステップ幅
           const stepPx = Math.hypot((frontAnkle.x - pivotAnkle.x) * b.w, (frontAnkle.y - pivotAnkle.y) * b.h);
           const stepCm = Math.round(stepPx / activePxPerCm);
           const stepPct = Math.round((stepCm / userHeightCm) * 100);
@@ -1023,7 +1108,6 @@
         }
       });
 
-      // 要の関節
       [11, 12, 13, 14, 15, 16, 23, 24, 25, 26, 27, 28].forEach(idx => {
         if (landmarks[idx]) {
           outputCtx.beginPath();
@@ -1038,29 +1122,47 @@
     }
 
     function generatePitchingCoachAdvice(rec) {
-      let praises = [], improvements = [];
+      let praises = [], improvements = [], primaryWeakness = 'balance';
       const m = rec.metrics;
 
-      // 1. 前膝ブレーキ
-      if (m.kneeBrake >= 15) praises.push(`前膝の急ブレーキ【+${m.kneeBrake}°】が完璧！下半身のパワーが指先に伝わっています！(⚡ 剛速球)`);
-      else improvements.push(`着地した前膝をピンと伸ばすイメージで急停止させよう！(🦘 瞬発力・バネ)`);
+      // 1. 前膝ブレーキ ➔ 🦘 瞬発力
+      if (m.kneeBrake >= 15) {
+        praises.push(`前膝の急ブレーキ【+${m.kneeBrake}°】が完璧！地面反力が指先に伝わっています！`);
+      } else {
+        improvements.push(`着地した前膝をピンと伸ばすイメージで急停止させよう！(🦘 瞬発力・地面反力)`);
+        primaryWeakness = 'spring';
+      }
 
-      // 2. 軸足バランス
-      if (m.pivotBalance <= 8) praises.push(`脚上げ時の軸足バランス【傾き ${m.pivotBalance}°】が超安定！(🎯 コントロールUP)`);
-      else improvements.push(`一本足で立ったときに骨盤を水平にキープしよう！(⚖️ 軸足バランス)`);
+      // 2. 軸足バランス ➔ ⚖️ バランス能力
+      if (m.pivotBalance <= 8) {
+        praises.push(`脚上げ時の軸足バランス【傾き ${m.pivotBalance}°】が超安定！`);
+      } else {
+        improvements.push(`一本足で立ったときに骨盤を水平にキープしよう！(⚖️ 軸足バランス支持力)`);
+        primaryWeakness = 'balance';
+      }
 
-      // 3. 体幹前傾
-      if (m.trunkTilt >= 28 && m.trunkTilt <= 45) praises.push(`リリース時の前傾【${m.trunkTilt}°】で低めに糸を引くボールが投げられます！(🏹 伸び)`);
-      else if (m.trunkTilt < 25) improvements.push(`前足の股関節を折り込み、胸をキャッチャーへ押し出そう！(🦴 股関節柔軟性)`);
+      // 3. 体幹前傾 ➔ 🦴 柔軟性
+      if (m.trunkTilt >= 28 && m.trunkTilt <= 45) {
+        praises.push(`リリース時の前傾【${m.trunkTilt}°】で低めに糸を引くボールが投げられます！`);
+      } else if (m.trunkTilt < 25) {
+        improvements.push(`前足の股関節を折り込み、胸をキャッチャーへ押し出そう！(🦴 股関節・胸椎柔軟性)`);
+        if (primaryWeakness !== 'balance') primaryWeakness = 'flex';
+      }
 
       // 4. ステップ幅
-      if (m.strideRatio >= 75 && m.strideRatio <= 90) praises.push(`ステップ幅が身長の【${m.strideRatio}%】で理想的な体重移動です！`);
-      else if (m.strideRatio < 70) improvements.push(`もう少し力強く踏み出して推進力を使おう！(🦘 下半身バネ)`);
+      if (m.strideRatio >= 75 && m.strideRatio <= 90) {
+        praises.push(`ステップ幅が身長の【${m.strideRatio}%】で理想的な体重移動です！`);
+      } else if (m.strideRatio < 70) {
+        improvements.push(`もう少し力強く踏み出して推進力を使おう！(🦘 下半身バネ)`);
+      }
 
-      return "【🤖 投球AIコーチ診断】\n🌟 ナイス！:\n" +
-        (praises.length > 0 ? praises.slice(0, 2).map(p => "・" + p).join("\n") : "・腕を振って力強く投げられています！") +
-        "\n\n🎯 つぎの覚醒ポイント:\n" +
-        (improvements.length > 0 ? improvements.slice(0, 1).map(i => "・" + i).join("\n") : "・今の素晴らしいフォームバランスをキープしよう！");
+      return {
+        text: "【🤖 投球AI診断】\n🌟 ナイス:\n" +
+          (praises.length > 0 ? praises.slice(0, 2).map(p => "・" + p).join("\n") : "・腕を振って力強く投げられています！") +
+          "\n\n🎯 覚醒ポイント:\n" +
+          (improvements.length > 0 ? improvements.slice(0, 1).map(i => "・" + i).join("\n") : "・今の素晴らしいフォームバランスをキープしよう！"),
+        weaknessKey: primaryWeakness
+      };
     }
 
     function getSavedPitchingRecords() {
@@ -1072,6 +1174,19 @@
       playTone(520, 0.1);
       const all = getSavedPitchingRecords();
       const now = new Date();
+      const mObj = {
+        pivotBalance: pitchingRecords.topPivotBalanceDeg !== null ? pitchingRecords.topPivotBalanceDeg : currentState.pivotBalanceDeg,
+        twistStatus: pitchingRecords.twistStatus || currentState.twistStatus,
+        kneeAngle: currentState.frontKneeAngle,
+        kneeBrake: pitchingRecords.kneeBrakeDeg !== null ? pitchingRecords.kneeBrakeDeg : 18,
+        trunkTilt: pitchingRecords.trunkTiltDeg !== null ? pitchingRecords.trunkTiltDeg : currentState.trunkTiltDeg,
+        releaseH: pitchingRecords.releaseHeightCm !== null ? pitchingRecords.releaseHeightCm : currentState.releaseHeightCm,
+        stride: pitchingRecords.maxStrideCm || currentState.strideCm,
+        strideRatio: pitchingRecords.maxStrideRatio || currentState.strideRatio
+      };
+
+      const diagnosis = generatePitchingCoachAdvice({ metrics: mObj });
+
       const entry = {
         id: Date.now(),
         date: `${now.getFullYear()}/${(now.getMonth()+1).toString().padStart(2,'0')}/${now.getDate().toString().padStart(2,'0')}`,
@@ -1080,22 +1195,45 @@
         height: userHeightCm,
         armSide: selectedArmSide,
         mode: selectedAngleMode,
-        metrics: {
-          pivotBalance: pitchingRecords.topPivotBalanceDeg !== null ? pitchingRecords.topPivotBalanceDeg : currentState.pivotBalanceDeg,
-          twistStatus: pitchingRecords.twistStatus || currentState.twistStatus,
-          kneeAngle: currentState.frontKneeAngle,
-          kneeBrake: pitchingRecords.kneeBrakeDeg !== null ? pitchingRecords.kneeBrakeDeg : 18,
-          trunkTilt: pitchingRecords.trunkTiltDeg !== null ? pitchingRecords.trunkTiltDeg : currentState.trunkTiltDeg,
-          releaseH: pitchingRecords.releaseHeightCm !== null ? pitchingRecords.releaseHeightCm : currentState.releaseHeightCm,
-          stride: pitchingRecords.maxStrideCm || currentState.strideCm,
-          strideRatio: pitchingRecords.maxStrideRatio || currentState.strideRatio
-        }
+        metrics: mObj,
+        primaryWeakness: diagnosis.weaknessKey
       };
 
       all.unshift(entry);
       localStorage.setItem(STORAGE_KEY, JSON.stringify(all));
-      showToast(`✅ ${playerName}選手の投球カルテを保存しました！`);
+
+      // トップ画面の身体4大エンジンへ弱点フラグを同期
+      updateBodyEngineAlert(diagnosis.weaknessKey);
+
+      showToast(`✅ ${playerName}選手の投球カルテを保存しました！\n（身体弱点：${WEAKNESS_MAP[diagnosis.weaknessKey].title}）`);
       populatePastPlayers();
+    }
+
+    function updateBodyEngineAlert(weaknessKey) {
+      try {
+        let engine = JSON.parse(localStorage.getItem('baseball_body_engine_v1') || '{}');
+        if (!engine[weaknessKey]) engine[weaknessKey] = {};
+        engine[weaknessKey].alert = true;
+        localStorage.setItem('baseball_body_engine_v1', JSON.stringify(engine));
+      } catch(e) {}
+    }
+
+    function showTargetTestModal(key) {
+      const data = WEAKNESS_MAP[key];
+      if (!data) return;
+      playTone(600, 0.08);
+
+      document.getElementById('weak-icon').textContent = data.icon;
+      document.getElementById('weak-title').textContent = data.title;
+      document.getElementById('weak-error-desc').textContent = data.error;
+      document.getElementById('weak-test-name').textContent = `▶ ${data.testName}`;
+      document.getElementById('weak-test-effect').textContent = `💡 ${data.testEffect}`;
+
+      // リンク先パラメータ設定
+      const link = document.getElementById('btn-go-body-test');
+      link.href = `body_tests.html?test=${key}`;
+
+      openModal('weakness-modal');
     }
 
     function updateCardLabels() {
@@ -1147,23 +1285,41 @@
 
       records.forEach((r, idx) => {
         const m = r.metrics;
-        const advice = generatePitchingCoachAdvice(r).replace(/\n/g, '<br>');
+        const diag = generatePitchingCoachAdvice(r);
+        const adviceHtml = diag.text.replace(/\n/g, '<br>');
+        const weakKey = r.primaryWeakness || diag.weaknessKey || 'balance';
+        const weakInfo = WEAKNESS_MAP[weakKey];
+
         list.innerHTML += `
-          <div class="bg-slate-950 p-2.5 rounded-xl border border-sky-500/30 space-y-1">
+          <div class="bg-slate-950 p-2.5 rounded-xl border border-sky-500/30 space-y-1.5">
             <div class="flex items-center justify-between font-black text-sky-300">
               <span>👤 ${r.playerName} (${r.date} ${r.time})</span>
               <span class="text-[10px] text-slate-400">${r.armSide === 'RIGHT' ? '右投げ' : '左投げ'}</span>
             </div>
+            
             <div class="text-[11px] text-slate-300 grid grid-cols-2 gap-1 py-0.5">
               <span>前膝ブレーキ: <b>${m.kneeBrake || '--'}°</b></span>
               <span>体幹前傾: <b>${m.trunkTilt || '--'}°</b></span>
               <span>軸足バランス: <b>${m.pivotBalance || '--'}°</b></span>
               <span>リリース高: <b>${m.releaseH || '--'}cm</b></span>
             </div>
-            <div class="bg-slate-900/90 p-2 rounded text-[10px] text-sky-100 leading-relaxed border border-slate-800">
-              ${advice}
+
+            <!-- 身体4大弱点アンロック誘導ボックス -->
+            <div class="p-2 rounded-lg bg-amber-950/40 border border-amber-500/40 flex items-center justify-between">
+              <div>
+                <span class="text-[9px] text-amber-300 font-bold block">🚨 この投球から暴かれた根本弱点：</span>
+                <span class="text-xs font-black text-white">${weakInfo.icon} ${weakInfo.title.split('（')[0]}</span>
+              </div>
+              <a href="body_tests.html?test=${weakKey}" class="btn-3d px-2.5 py-1 bg-gradient-to-r from-amber-500 to-yellow-500 text-slate-950 text-[10px] font-black rounded-lg no-underline shadow">
+                身体を直す ➔
+              </a>
             </div>
-            <button onclick="shareRecordToLine(${idx})" class="btn-3d w-full py-1 mt-1 bg-emerald-600 text-white rounded text-[10px] font-bold">
+
+            <div class="bg-slate-900/90 p-2 rounded text-[10px] text-sky-100 leading-relaxed border border-slate-800">
+              ${adviceHtml}
+            </div>
+
+            <button onclick="shareRecordToLine(${idx})" class="btn-3d w-full py-1 bg-emerald-600 text-white rounded text-[10px] font-bold">
               💬 LINEで共有・送信
             </button>
           </div>
@@ -1174,7 +1330,9 @@
     function shareRecordToLine(idx) {
       const r = getSavedPitchingRecords()[idx];
       if (!r) return;
-      const text = `⚾ 【投球AIバイオメカニクス 選手レポート】\n👤 選手: ${r.playerName} (${r.armSide === 'RIGHT' ? '右投' : '左投'})\n📅 測定日: ${r.date}\n前膝ブレーキ: ${r.metrics.kneeBrake}°\n体幹前傾: ${r.metrics.trunkTilt}°\nリリース高: ${r.metrics.releaseH}cm\n\n` + generatePitchingCoachAdvice(r);
+      const diag = generatePitchingCoachAdvice(r);
+      const weak = WEAKNESS_MAP[r.primaryWeakness || diag.weaknessKey];
+      const text = `⚾ 【投球バイオメカニクス 弱点レポート】\n👤 選手: ${r.playerName} (${r.armSide === 'RIGHT' ? '右投' : '左投'})\n📅 測定日: ${r.date}\n前膝ブレーキ: ${r.metrics.kneeBrake}°\n体幹前傾: ${r.metrics.trunkTilt}°\n軸足バランス: ${r.metrics.pivotBalance}°\n\n🚨 暴かれた身体の弱点: ${weak.title}\n➔ ${weak.testName}\n\n` + diag.text;
       
       if (navigator.share) {
         navigator.share({ title: `${r.playerName}選手の投球レポート`, text }).catch(() => {});
@@ -1185,7 +1343,6 @@
     }
 
     document.addEventListener('DOMContentLoaded', () => {
-      // 選手名・チーム名初期化
       try {
         const prof = JSON.parse(localStorage.getItem('baseball_user_profile') || '{}');
         if (prof.name) {
@@ -1196,7 +1353,7 @@
 
       updateCardLabels();
 
-      // スキャン定規のドラッグイベント登録
+      // スキャン定規ドラッグイベント
       scanCanvas.addEventListener('mousedown', onScanPointerDown);
       window.addEventListener('mousemove', onScanPointerMove);
       window.addEventListener('mouseup', onScanPointerUp);
@@ -1206,7 +1363,6 @@
       window.addEventListener('touchend', onScanPointerUp);
       window.addEventListener('touchcancel', onScanPointerUp);
 
-      // スキャンシークバー
       document.getElementById('scan-seek-bar').addEventListener('input', (e) => {
         if (!Number.isFinite(videoElement.duration) || videoElement.duration === 0) return;
         videoElement.currentTime = (e.target.value / 100) * videoElement.duration;
@@ -1223,7 +1379,7 @@
         renderScanFrame();
       });
 
-      // 動画インプット
+      // 動画選択
       document.getElementById('video-input-side').addEventListener('change', function(e) {
         if (e.target.files && e.target.files[0]) handleVideoLoad(e.target.files[0], 'SIDE');
         this.value = null;
@@ -1233,7 +1389,7 @@
         this.value = null;
       });
 
-      // 腕選択
+      // 投球腕切り替え
       document.getElementById('btn-arm-right').addEventListener('click', () => {
         selectedArmSide = 'RIGHT';
         document.getElementById('btn-arm-right').className = "py-1.5 rounded-lg font-black border border-sky-500 bg-sky-600 text-white";
@@ -1247,7 +1403,7 @@
         updateCardLabels();
       });
 
-      // スキャン実行ボタン
+      // スキャン実行
       document.getElementById('btn-scan-action').addEventListener('click', async () => {
         if (!videoElement.videoWidth) { showToast("⚠️ 動画の読み込みをお待ちください"); return; }
         scanModeActive = true;
@@ -1282,7 +1438,7 @@
         }, 150);
       });
 
-      // 再生・停止
+      // 再生制御
       const btnPlay = document.getElementById('btn-play-pause');
       btnPlay.addEventListener('click', () => {
         if (videoElement.paused) {
@@ -1308,7 +1464,6 @@
         }
       }
 
-      // コマ送り
       document.getElementById('btn-frame-prev').addEventListener('click', () => {
         videoElement.pause();
         videoElement.currentTime = Math.max(0, videoElement.currentTime - 0.033);
@@ -1324,8 +1479,8 @@
       document.getElementById('btn-set-top').addEventListener('click', () => {
         pitchingRecords.topPivotBalanceDeg = currentState.pivotBalanceDeg;
         document.getElementById('m0-sub').textContent = `トップ決定: ${currentState.pivotBalanceDeg}°`;
-        showTone(660);
-        showToast(`🎯 脚上げトップ時の軸足バランス【${currentState.pivotBalanceDeg}°】を固定！`);
+        playTone(660, 0.1, 'triangle');
+        showToast(`🎯 脚上げ時の軸足バランス【${currentState.pivotBalanceDeg}°】を固定！`);
       });
 
       document.getElementById('btn-set-release').addEventListener('click', () => {
@@ -1334,13 +1489,11 @@
         pitchingRecords.kneeBrakeDeg = Math.max(5, 180 - currentState.frontKneeAngle);
         document.getElementById('m2-sub').textContent = `ブレーキ: +${pitchingRecords.kneeBrakeDeg}° (壁)`;
         document.getElementById('m3-sub').textContent = `放出時: ${currentState.trunkTiltDeg}°`;
-        showTone(880);
-        showToast(`💥 放出リリースの瞬間（体幹前傾＆前膝壁）を記録！`);
+        playTone(880, 0.12, 'triangle');
+        showToast(`💥 放出の瞬間（体幹前傾＆前膝壁）を記録！`);
       });
 
-      function showTone(f) { playTone(f, 0.12, 'triangle'); }
-
-      // 保存・履歴
+      // 保存・モーダル操作
       document.getElementById('btn-save-record').addEventListener('click', saveCurrentPitchingRecord);
       document.getElementById('btn-open-carte').addEventListener('click', () => openModal('carte-modal'));
       document.getElementById('btn-open-carte-header').addEventListener('click', () => openModal('carte-modal'));
