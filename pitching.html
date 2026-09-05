@@ -17,12 +17,13 @@
 
     :root {
       --font-game: "M PLUS Rounded 1c", "Hiragino Maru Gothic ProN", sans-serif;
-      --bg-dark: #080e1a;
-      --card-dark: #10192d;
-      --card-border: #1e3a5f;
+      --bg-dark: #0a0f1d;
+      --card-dark: #131c31;
+      --card-border: #223254;
+      --gold-primary: #f59e0b;
+      --gold-shadow: #b45309;
       --sky-primary: #0284c7;
       --sky-light: #38bdf8;
-      --gold-primary: #f59e0b;
       --emerald-primary: #10b981;
       --rose-primary: #f43f5e;
     }
@@ -38,16 +39,47 @@
 
     body {
       font-family: var(--font-game);
-      background: radial-gradient(circle at 50% 25%, #13223f 0%, #091122 75%, #050912 100%);
+      background-color: var(--bg-dark);
       color: #ffffff;
       height: 100dvh;
       max-height: 100dvh;
       display: flex;
       flex-direction: column;
       align-items: center;
-      padding: env(safe-area-inset-top, 4px) 6px calc(env(safe-area-inset-bottom, 4px) + 4px) 6px;
+      padding: env(safe-area-inset-top, 4px) 8px calc(env(safe-area-inset-bottom, 4px) + 4px) 8px;
       overflow: hidden;
       justify-content: flex-start;
+      position: relative;
+    }
+
+    .brawl-bg-pattern {
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at 50% 30%, #172a4d 0%, #0c1424 75%, #050811 100%);
+      z-index: -2;
+      overflow: hidden;
+    }
+
+    .sunburst {
+      position: absolute;
+      top: 28%;
+      left: 50%;
+      width: 540px;
+      height: 540px;
+      transform: translate(-50%, -50%);
+      background: repeating-conic-gradient(
+        rgba(56, 189, 248, 0.06) 0deg 15deg,
+        transparent 15deg 30deg
+      );
+      border-radius: 50%;
+      pointer-events: none;
+      animation: spinRays 45s linear infinite;
+      z-index: -1;
+    }
+
+    @keyframes spinRays {
+      from { transform: translate(-50%, -50%) rotate(0deg); }
+      to { transform: translate(-50%, -50%) rotate(360deg); }
     }
 
     .btn-3d {
@@ -67,10 +99,29 @@
     }
 
     .brawl-panel {
-      background: rgba(16, 25, 45, 0.94);
+      background: rgba(19, 28, 49, 0.94);
       border: 2px solid var(--card-border);
-      box-shadow: 0 4px 0 #070d18, inset 0 1px 0 rgba(255, 255, 255, 0.12);
-      border-radius: 12px;
+      box-shadow: 0 4px 0 #080d1a, inset 0 1px 0 rgba(255, 255, 255, 0.15);
+      border-radius: 14px;
+    }
+
+    .btn-battle-blue {
+      background: linear-gradient(180deg, #38bdf8 0%, #0284c7 50%, #0369a1 100%);
+      border: 2px solid #ffffff;
+      box-shadow: 0 4px 0 #0c4a6e, 0 6px 10px rgba(2, 132, 199, 0.35);
+    }
+    .btn-battle-blue:active {
+      box-shadow: 0 1px 0 #0c4a6e;
+    }
+
+    .btn-battle-gold {
+      background: linear-gradient(180deg, #fbbf24 0%, #f59e0b 50%, #d97706 100%);
+      border: 2px solid #fef08a;
+      box-shadow: 0 4px 0 #92400e, 0 6px 10px rgba(245, 158, 11, 0.35);
+      color: #0f172a;
+    }
+    .btn-battle-gold:active {
+      box-shadow: 0 1px 0 #92400e;
     }
 
     .step-pill {
@@ -80,10 +131,10 @@
       font-size: 0.68rem;
       font-weight: 900;
       border-radius: 9999px;
-      background: #131f38;
+      background: #10192d;
       color: #94a3b8;
       border: 1.5px solid #24385e;
-      box-shadow: 0 2px 0 #0a1120;
+      box-shadow: 0 2px 0 #080d18;
       cursor: pointer;
       transition: all 0.15s ease;
     }
@@ -111,7 +162,7 @@
     }
 
     .mode-card {
-      background: linear-gradient(135deg, #162444 0%, #0f1a33 100%);
+      background: linear-gradient(135deg, #182647 0%, #111c34 100%);
       border: 2px solid #2d4879;
       border-radius: 14px;
       padding: 12px;
@@ -119,13 +170,13 @@
       align-items: center;
       gap: 12px;
       cursor: pointer;
-      box-shadow: 0 4px 0 #070d18;
+      box-shadow: 0 4px 0 #080d1a;
       transition: all 0.12s ease;
     }
 
     .mode-card:active {
       transform: translateY(2px);
-      box-shadow: 0 1px 0 #070d18;
+      box-shadow: 0 1px 0 #080d1a;
     }
 
     .screen-wrapper {
@@ -177,14 +228,14 @@
     }
 
     .metric-card {
-      background: rgba(18, 28, 51, 0.95);
+      background: linear-gradient(135deg, #162444 0%, #111a31 100%);
       border: 1.5px solid #284473;
-      border-radius: 8px;
-      padding: 3px 6px;
+      border-radius: 10px;
+      padding: 4px 6px;
       display: flex;
       flex-direction: column;
       gap: 1px;
-      box-shadow: 0 2px 0 #09101f;
+      box-shadow: 0 2px 0 #080d18, inset 0 1px 0 rgba(255, 255, 255, 0.08);
       cursor: pointer;
       transition: transform 0.1s ease, border-color 0.1s ease;
     }
@@ -196,23 +247,48 @@
 
     .body-tag {
       font-size: 0.58rem;
-      padding: 1px 4px;
-      border-radius: 4px;
+      padding: 1px 5px;
+      border-radius: 9999px;
       font-weight: 900;
       display: inline-block;
       width: fit-content;
-      line-height: 1.1;
+      line-height: 1.15;
     }
 
-    .tag-balance { background: rgba(14, 165, 233, 0.25); color: #38bdf8; border: 1px solid rgba(56, 189, 248, 0.5); }
-    .tag-flex { background: rgba(245, 158, 11, 0.25); color: #fbbf24; border: 1px solid rgba(251, 191, 36, 0.5); }
-    .tag-spring { background: rgba(249, 115, 22, 0.25); color: #fb923c; border: 1px solid rgba(251, 146, 60, 0.5); }
-    .tag-schema { background: rgba(168, 85, 247, 0.25); color: #c084fc; border: 1px solid rgba(192, 132, 252, 0.5); }
+    .tag-balance { background: rgba(14, 165, 233, 0.25); color: #38bdf8; border: 1px solid rgba(56, 189, 248, 0.6); }
+    .tag-flex { background: rgba(245, 158, 11, 0.25); color: #fbbf24; border: 1px solid rgba(251, 191, 36, 0.6); }
+    .tag-spring { background: rgba(249, 115, 22, 0.25); color: #fb923c; border: 1px solid rgba(251, 146, 60, 0.6); }
+    .tag-schema { background: rgba(168, 85, 247, 0.25); color: #c084fc; border: 1px solid rgba(192, 132, 252, 0.6); }
+
+    .comic-bubble {
+      background: #ffffff;
+      color: #0f172a;
+      padding: 6px 10px;
+      border-radius: 12px;
+      font-size: 0.72rem;
+      font-weight: 900;
+      line-height: 1.25;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.45);
+      border: 2px solid #0f172a;
+      position: relative;
+    }
+
+    .comic-bubble::after {
+      content: "";
+      position: absolute;
+      bottom: -6px;
+      left: 18px;
+      border-width: 6px 6px 0;
+      border-style: solid;
+      border-color: #ffffff transparent;
+      display: block;
+      width: 0;
+    }
 
     .modal-overlay {
       position: fixed;
       inset: 0;
-      background: rgba(5, 9, 18, 0.88);
+      background: rgba(4, 7, 14, 0.85);
       backdrop-filter: blur(5px);
       display: none;
       align-items: center;
@@ -255,19 +331,24 @@
 </head>
 <body>
 
+  <!-- Sunburst Background Layer -->
+  <div class="brawl-bg-pattern"></div>
+  <div class="sunburst"></div>
+
   <header class="w-full max-w-md flex flex-col gap-1 flex-shrink-0 z-10 mb-1">
-    <div class="flex items-center justify-between">
-      <a href="./index.html" class="btn-3d px-2.5 py-1 rounded-full bg-slate-800 border border-slate-600 text-sky-400 text-xs font-black no-underline">
-        🏠 ホーム
+    <div class="flex items-center justify-between gap-1.5">
+      <a href="./index.html" class="btn-3d px-3 py-1 rounded-full bg-slate-900 border border-slate-700 text-sky-400 text-xs font-black no-underline">
+        🏠 ロビー
       </a>
       <h1 class="text-sm font-black text-sky-300 flex items-center gap-1">
-        ⚾ 投球・送球 身体弱点スキャナー 🎯
+        ⚾ 投球AI 弱点スキャナー 🎯
       </h1>
-      <button id="btn-open-carte-header" class="btn-3d px-2.5 py-1 rounded-full bg-slate-800 border border-slate-600 text-amber-400 text-xs font-black">
+      <button id="btn-open-carte-header" class="btn-3d px-3 py-1 rounded-full bg-slate-900 border border-slate-700 text-amber-400 text-xs font-black">
         📋 履歴
       </button>
     </div>
 
+    <!-- Step Navigator -->
     <div class="flex items-center gap-1.5 mt-0.5">
       <div id="step-nav-1" class="step-pill active" onclick="goToStep(1)">1. 動画えらび</div>
       <div id="step-nav-2" class="step-pill" onclick="goToStep(2)">2. 姿勢スキャン</div>
@@ -275,23 +356,33 @@
     </div>
   </header>
 
-  <main class="w-full max-w-md flex-1 brawl-panel p-2 flex flex-col gap-1 min-h-0 relative z-10 overflow-hidden">
+  <main class="w-full max-w-md flex-1 brawl-panel p-2.5 flex flex-col gap-1 min-h-0 relative z-10 overflow-hidden">
     
-    <!-- STEP 1: 動画選択 -->
+    <!-- STEP 1: 動画選択（マイキャラが案内） -->
     <section id="view-step1" class="view-section active">
+      <!-- マイキャラ吹き出し案内 -->
+      <div class="w-full flex items-center gap-2.5 bg-slate-950/70 p-2 rounded-xl border border-sky-500/30">
+        <div class="w-12 h-12 flex-shrink-0 relative flex items-center justify-center">
+          <img src="character.png" alt="マイキャラ" class="w-full h-full object-contain filter drop-shadow" onerror="this.src='https://placehold.co/100x100/1e293b/38bdf8?text=⚾';">
+        </div>
+        <div class="comic-bubble flex-1 text-[11px]">
+          きょうのピッチングや送球動画を選んでね！フォームの裏に隠れた<b>「身体の4大ブレーキ」</b>を暴くぜ！
+        </div>
+      </div>
+
       <div class="flex flex-col gap-2 w-full flex-1 justify-center">
-        <!-- 横向き撮影 -->
-        <label for="video-input-side" class="mode-card border-sky-500">
+        <!-- 横向き撮影（推奨） -->
+        <label for="video-input-side" class="mode-card border-sky-500/80">
           <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-sky-400 to-blue-600 flex items-center justify-center text-2xl flex-shrink-0 shadow-md">
             ⚾
           </div>
           <div class="flex flex-col text-left flex-1 min-w-0">
             <div class="flex items-center justify-between">
               <span class="text-sm font-black text-white">横向き（側方）動画を解析</span>
-              <span class="text-[9px] bg-sky-900/80 text-sky-300 px-1.5 py-0.5 rounded font-bold">基本推奨</span>
+              <span class="text-[9px] bg-sky-900 text-sky-300 px-1.5 py-0.5 rounded font-black">基本推奨</span>
             </div>
             <span class="text-[10px] text-sky-200 font-bold leading-tight mt-0.5">
-              軸足バランス・前膝ブレーキ壁・体幹前傾・リリース高
+              軸足バランス・前膝ブレーキ壁・体幹しなり・リリース高
             </span>
             <span class="text-[9px] text-amber-300 mt-1 font-black">➔ ⚖️バランス・🦘瞬発力・🦴柔軟性を診断</span>
           </div>
@@ -299,35 +390,35 @@
         </label>
 
         <!-- 正面撮影 -->
-        <label for="video-input-front" class="mode-card border-emerald-500">
+        <label for="video-input-front" class="mode-card border-emerald-500/80">
           <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-emerald-400 to-teal-600 flex items-center justify-center text-2xl flex-shrink-0 shadow-md">
             🎯
           </div>
           <div class="flex flex-col text-left flex-1 min-w-0">
             <span class="text-sm font-black text-white">正面（捕手/投手側）動画を解析</span>
             <span class="text-[10px] text-emerald-200 font-bold leading-tight mt-0.5">
-              目線左右ブレ・骨盤傾斜・ステップ踏み出しズレ
+              ステップの左右ズレ（イン/アウト）・頭の目線ブレ
             </span>
-            <span class="text-[9px] text-amber-300 mt-1 font-black">➔ 🧠身体図式・⚖️骨盤水平支持力を診断</span>
+            <span class="text-[9px] text-purple-300 mt-1 font-black">➔ 🧠身体図式（脳内GPSのズレ）を診断</span>
           </div>
           <input type="file" id="video-input-front" accept="video/*" class="hidden">
         </label>
       </div>
 
-      <!-- 身体4大弱点連携バナー -->
-      <div class="w-full p-2 bg-slate-950/80 border border-sky-500/40 rounded-xl flex items-center justify-between text-[10px] text-sky-200 font-bold">
-        <span>💡 フォームの欠点から【身体の根本原因】を暴くよ！</span>
-        <a href="body_tests.html" class="text-amber-400 font-black underline">身体テストへ ➔</a>
+      <!-- 身体4大テスト連携バナー -->
+      <div class="w-full p-2 bg-slate-950/80 border border-sky-500/40 rounded-xl flex items-center justify-between text-[11px] text-sky-200 font-bold">
+        <span>💡 身体4大テストで直接測る？</span>
+        <a href="body_tests.html" class="text-amber-400 font-black underline">身体ドックへ ➔</a>
       </div>
 
-      <button id="btn-open-carte-top" class="btn-3d w-full py-2.5 rounded-xl bg-gradient-to-r from-amber-500 to-yellow-500 text-slate-950 font-black text-xs shadow-md border-2 border-white">
-        🏆 保存した投球カルテ・弱点診断履歴を見る
+      <button id="btn-open-carte-top" class="btn-3d btn-battle-gold w-full py-2.5 rounded-xl font-black text-xs shadow-md">
+        🏆 保存した投球カルテ・弱点履歴を見る
       </button>
     </section>
 
     <!-- STEP 2: 姿勢スキャン & 身長キャリブレーション -->
     <section id="view-step2" class="view-section">
-      <div class="w-full p-1.5 bg-slate-950 border border-sky-500/50 rounded-lg text-center text-[11px] font-bold text-sky-200" id="scan-guide-text">
+      <div class="w-full p-1.5 bg-slate-950/90 border border-sky-500/50 rounded-lg text-center text-[11px] font-bold text-sky-200" id="scan-guide-text">
         🧍 <b>まっすぐ立って構えた瞬間</b>でバーを止めて「① AI自動スキャン」を押してね！
       </div>
 
@@ -339,7 +430,7 @@
         </div>
       </div>
 
-      <div class="w-full flex items-center gap-2 bg-slate-950 px-2 py-1 rounded-lg border border-slate-700">
+      <div class="w-full flex items-center gap-2 bg-slate-950 px-2.5 py-1 rounded-lg border border-slate-700">
         <input type="range" id="scan-seek-bar" class="w-full h-2 accent-sky-500 cursor-pointer" value="0" min="0" max="100" step="0.001">
         <span id="scan-time-disp" class="text-[10px] font-mono text-sky-400 font-black min-w-[55px] text-right">0.00 / 0.00</span>
       </div>
@@ -353,7 +444,7 @@
       </div>
 
       <button id="btn-scan-next-step" class="btn-3d w-full py-2 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-black text-xs shadow-md border border-emerald-300" style="display: none;">
-        🎯 ② これで決定して次へ！
+        🎯 ② これで決定して選手情報へ！
       </button>
     </section>
 
@@ -392,64 +483,64 @@
 
       <div class="flex gap-2 w-full max-w-xs mt-2">
         <button id="btn-re-scan" class="btn-3d flex-1 py-2 rounded-xl bg-slate-800 border border-slate-600 text-xs font-black text-slate-300">🔄 戻る</button>
-        <button id="btn-start-analysis" class="btn-3d flex-[1.6] py-2 rounded-xl bg-gradient-to-r from-sky-500 to-blue-600 text-white font-black text-xs shadow-md border border-white">
+        <button id="btn-start-analysis" class="btn-3d flex-[1.6] py-2 rounded-xl btn-battle-blue text-white font-black text-xs shadow-md">
           🚀 解析スタート！
         </button>
       </div>
     </section>
 
-    <!-- STEP 4: 5大キネティックチェーン ダッシュボード & 解析ワークスペース -->
+    <!-- STEP 4: 5大指標ダッシュボード ＆ 動作解析画面 -->
     <section id="view-step4" class="view-section">
-      <!-- 5大指標メーターパネル（身体4大エンジン弱点タグ付き） -->
+      <!-- 5大指標メーターパネル（科学的根拠に基づく4大弱点直結） -->
       <div class="dashboard">
-        <!-- 0: 軸足バランス ➔ ⚖️ バランス能力 / 🧠 身体図式 -->
+        <!-- 0: 軸足バランス ➔ ⚖️ バランス能力（中殿筋・足裏支持力） -->
         <div class="metric-card" onclick="showTargetTestModal('balance')">
           <div class="flex items-center justify-between">
             <span class="text-[10px] font-black text-sky-300 truncate" id="m0-title">⚖️ 軸足バランス</span>
             <span class="body-tag tag-balance">⚖️ バランス</span>
           </div>
           <span class="text-sm font-black text-amber-400 leading-tight" id="m0-val">-- °</span>
-          <span class="text-[9px] text-slate-400" id="m0-sub">トップ時: --</span>
+          <span class="text-[9px] text-slate-400 truncate" id="m0-sub">脚上げ時: --</span>
         </div>
 
-        <!-- 1: 捻転差タメ ➔ 🦴 柔軟性 (胸椎回旋) -->
+        <!-- 1: 捻転差タメ ➔ 🦴 柔軟性（胸椎回旋モビリティ） -->
         <div class="metric-card" onclick="showTargetTestModal('flex')">
           <div class="flex items-center justify-between">
             <span class="text-[10px] font-black text-sky-300 truncate" id="m1-title">🔄 捻転差 (タメ)</span>
             <span class="body-tag tag-flex">🦴 柔軟性</span>
           </div>
           <span class="text-sm font-black text-amber-400 leading-tight" id="m1-val">--</span>
-          <span class="text-[9px] text-slate-400" id="m1-sub">接地時判定: --</span>
+          <span class="text-[9px] text-slate-400 truncate" id="m1-sub">接地判定: --</span>
         </div>
 
-        <!-- 2: 前膝ブレーキ壁 ➔ 🦘 瞬発力 (地面反力) -->
+        <!-- 2: 前膝ブレーキ壁 ➔ 🦘 瞬発力（地面反力・急停止バネ） -->
         <div class="metric-card" onclick="showTargetTestModal('spring')">
           <div class="flex items-center justify-between">
             <span class="text-[10px] font-black text-sky-300 truncate" id="m2-title">🦵 前膝ブレーキ壁</span>
             <span class="body-tag tag-spring">🦘 瞬発力</span>
           </div>
           <span class="text-sm font-black text-amber-400 leading-tight" id="m2-val">-- °</span>
-          <span class="text-[9px] text-slate-400" id="m2-sub">伸展変化: -- °</span>
+          <span class="text-[9px] text-slate-400 truncate" id="m2-sub">伸展変化: -- °</span>
         </div>
 
-        <!-- 3: 体幹前傾 ➔ 🦴 柔軟性 (股関節ヒンジ) -->
+        <!-- 3: 体幹前傾しなり ➔ 🦴 柔軟性（股関節ヒンジ・もも裏柔軟性） -->
         <div class="metric-card" onclick="showTargetTestModal('flex')">
           <div class="flex items-center justify-between">
             <span class="text-[10px] font-black text-sky-300 truncate" id="m3-title">📐 体幹前傾 (しなり)</span>
             <span class="body-tag tag-flex">🦴 柔軟性</span>
           </div>
           <span class="text-sm font-black text-amber-400 leading-tight" id="m3-val">-- °</span>
-          <span class="text-[9px] text-slate-400" id="m3-sub">リリース時: -- °</span>
+          <span class="text-[9px] text-slate-400 truncate" id="m3-sub">放出時: -- °</span>
         </div>
 
-        <!-- 4: リリース高 / ステップ幅 ➔ 🧠 身体図式 (空間認識) -->
+        <!-- 4: リリース高ブレ ＆ 踏み出しズレ ➔ 🧠 身体図式（脳内GPS・空間認知） -->
         <div class="metric-card col-span-2 sm:col-span-1" onclick="showTargetTestModal('schema')">
           <div class="flex items-center justify-between">
-            <span class="text-[10px] font-black text-sky-300 truncate" id="m4-title">💥 リリース高 / 歩幅</span>
+            <span class="text-[10px] font-black text-sky-300 truncate" id="m4-title">🎯 リリース高 / ズレ</span>
             <span class="body-tag tag-schema">🧠 身体図式</span>
           </div>
           <span class="text-sm font-black text-amber-400 leading-tight" id="m4-val">-- cm</span>
-          <span class="text-[9px] text-slate-400" id="m4-sub">ステップ: -- cm (0%)</span>
+          <span class="text-[9px] text-slate-400 truncate" id="m4-sub">ステップ左右ズレ: -- cm</span>
         </div>
       </div>
 
@@ -473,7 +564,7 @@
 
       <!-- 操作ボタン & 再生バー -->
       <div class="w-full flex flex-col gap-1 z-10 flex-shrink-0">
-        <div class="w-full flex items-center gap-2 bg-slate-950 px-2 py-0.5 rounded-lg border border-slate-700">
+        <div class="w-full flex items-center gap-2 bg-slate-950 px-2 py-1 rounded-lg border border-slate-700">
           <input type="range" id="seek-bar" class="w-full h-2 accent-sky-500 cursor-pointer" value="0" min="0" max="100" step="0.001">
           <span id="time-disp" class="text-[10px] font-mono text-sky-400 font-black min-w-[55px] text-right">0.00 / 0.00</span>
         </div>
@@ -505,7 +596,7 @@
 
   </main>
 
-  <!-- 📋 投球カルテモーダル（弱点特定 ＆ 身体テスト直結クエスト） -->
+  <!-- 📋 投球カルテモーダル -->
   <div id="carte-modal" class="modal-overlay" onclick="closeModalOnBackdrop(event, 'carte-modal')">
     <div class="brawl-panel p-3 max-w-sm w-full bg-slate-900 border-sky-500 flex flex-col max-h-[88dvh] gap-2">
       <div class="flex items-center justify-between border-b border-slate-700 pb-1.5">
@@ -548,7 +639,7 @@
         <button onclick="closeModal('weakness-modal')" class="flex-1 py-2 bg-slate-800 text-slate-300 font-bold rounded-xl text-xs active:scale-95">
           とじる
         </button>
-        <a id="btn-go-body-test" href="body_tests.html" class="flex-[1.6] btn-3d py-2 bg-gradient-to-r from-emerald-500 to-teal-600 text-slate-950 font-black rounded-xl text-xs shadow-md no-underline">
+        <a id="btn-go-body-test" href="body_tests.html" class="flex-[1.6] btn-3d py-2 btn-battle-blue text-white font-black rounded-xl text-xs shadow-md no-underline">
           💥 測定＆1分トレへGO!
         </a>
       </div>
@@ -613,7 +704,7 @@
       releaseHeightCm: 0,
       strideCm: 0,
       strideRatio: 0,
-      headShiftCm: 0
+      stepLateralDeviationCm: 0 // ステップの左右ズレ（身体図式判定用）
     };
 
     // 記録された最大/決定値
@@ -626,36 +717,36 @@
       releaseHeightCm: null,
       maxStrideCm: 0,
       maxStrideRatio: 0,
-      maxHeadShiftCm: 0
+      stepLateralDeviationCm: 0
     };
 
-    // 身体4大弱点とテストの辞書
+    // 身体4大弱点とテストの辞書（生体力学の因果関係に100%整合）
     const WEAKNESS_MAP = {
       balance: {
         icon: "⚖️",
-        title: "バランス能力（軸足の土台・支持力）",
-        error: "脚上げ時の一本足で骨盤が水平を保てず、体がグラついています。このままだと体重移動がブレて手投げになります。",
-        testName: "⚓ 目隠し片足立ちキープテスト",
-        testEffect: "軸足の足裏アーチとお尻（中殿筋）を目覚めさせ、どんな球でも崩れない投球軸を作ります。"
+        title: "バランス能力（土台・片足支持力）",
+        error: "一本足で立った瞬間に骨盤が水平を保てず崩れています。軸足のお尻（中殿筋）と足裏の土台が弱いため、体重移動がブレて手投げになります。",
+        testName: "⚓ 目隠し片足立ちテスト（15秒キープ）",
+        testEffect: "軸足の足裏アーチとお尻（中殿筋）を目覚めさせ、どんな球でも崩れない安定した回転軸を作ります。"
       },
       flex: {
         icon: "🏹",
-        title: "柔軟性・関節可動域（胸椎・股関節ヒンジ）",
-        error: "胸と腰の捻転差が作れず同時回りになっている、または体幹が起き上がってムチのようなしなりが使えていません。",
-        testName: "四つ這い胸椎回旋テスト ＆ 股関節ヒンジ",
-        testEffect: "背骨と股関節のロックを解除し、低めに糸を引く伸びやかな剛速球を生み出します。"
+        title: "柔軟性・関節可動域（胸椎回旋・股関節ヒンジ）",
+        error: "胸と腰が同時に回って手投げになっている、またはリリースで上体が起き上がってムチのようなしなりが使えていません。",
+        testName: "四つ這い胸椎回旋テスト ＆ 股関節ヒンジ前屈",
+        testEffect: "背骨（胸椎）と股関節のロックを解除し、低めに糸を引く伸びやかな剛速球を生み出します。"
       },
       spring: {
         icon: "🦘",
-        title: "瞬発力・地面反力（前膝ブロックバネ）",
-        error: "着地した前足の膝が曲がったまま潰れ、せっかく助走で溜めたエネルギーが地面に逃げてしまっています。",
-        testName: "沈み込み垂直跳びテスト ＆ 前足ストップドリル",
-        testEffect: "前足でガツンと急ブレーキをかけて回転を最大加速させ、指先への初速を爆発させます。"
+        title: "瞬発力・地面反力（前足急停止バネ）",
+        error: "着地した前膝が曲がったまま沈み、せっかく並進で溜めたエネルギーが地面に逃げてしまっています。",
+        testName: "💥 沈み込み垂直跳びテスト ＆ 前足ストップドリル",
+        testEffect: "前足1本でガツンと急ブレーキをかけて回転を最大加速させ、指先への初速を爆発させます。"
       },
       schema: {
         icon: "🧠",
         title: "身体図式・ボディイメージ（脳内空間GPS）",
-        error: "リリースポイントが毎球バラついている、または頭が前に大きく突っ込んで目線が上下左右に揺れています。",
+        error: "リリース位置が毎球バラついている、またはステップの着地が左右（イン/アウト）に狂い、狙った空間座標から外れています。",
         testName: "👣 目隠し足踏みズレテスト",
         testEffect: "脳内の重心感覚と空間認識をリセットし、思い通りのリリース高と針の穴を通す制球力を手に入れます。"
       }
@@ -829,11 +920,11 @@
       const topY = b.y + tuneRuler.topYNorm * b.h;
       const bottomY = b.y + tuneRuler.bottomYNorm * b.h;
       const centerX = b.x + tuneRuler.centerXNorm * b.w;
-      const barWidth = 50;
+      const barWidth = 55;
 
       // 中心縦ライン
-      scanCtx.strokeStyle = "rgba(56, 189, 248, 0.4)";
-      scanCtx.lineWidth = 3;
+      scanCtx.strokeStyle = "rgba(56, 189, 248, 0.45)";
+      scanCtx.lineWidth = 3.5;
       scanCtx.beginPath();
       scanCtx.moveTo(centerX, topY);
       scanCtx.lineTo(centerX, bottomY);
@@ -841,7 +932,7 @@
 
       // 頭バー（青）
       scanCtx.strokeStyle = "#38bdf8";
-      scanCtx.lineWidth = 3.5;
+      scanCtx.lineWidth = 4;
       scanCtx.beginPath();
       scanCtx.moveTo(centerX - barWidth, topY);
       scanCtx.lineTo(centerX + barWidth, topY);
@@ -849,20 +940,20 @@
       
       scanCtx.fillStyle = "#38bdf8";
       scanCtx.beginPath();
-      scanCtx.arc(centerX, topY, 11, 0, Math.PI * 2);
+      scanCtx.arc(centerX, topY, 12, 0, Math.PI * 2);
       scanCtx.fill();
       scanCtx.strokeStyle = "#ffffff";
-      scanCtx.lineWidth = 2;
+      scanCtx.lineWidth = 2.5;
       scanCtx.stroke();
 
       scanCtx.fillStyle = "#ffffff";
-      scanCtx.font = "bold 10px sans-serif";
+      scanCtx.font = "bold 11px sans-serif";
       scanCtx.textAlign = "center";
       scanCtx.fillText("👑 あたま ↕", centerX, topY - 14);
 
       // 地面バー（赤）
       scanCtx.strokeStyle = "#f43f5e";
-      scanCtx.lineWidth = 3.5;
+      scanCtx.lineWidth = 4;
       scanCtx.beginPath();
       scanCtx.moveTo(centerX - barWidth, bottomY);
       scanCtx.lineTo(centerX + barWidth, bottomY);
@@ -870,10 +961,10 @@
 
       scanCtx.fillStyle = "#f43f5e";
       scanCtx.beginPath();
-      scanCtx.arc(centerX, bottomY, 11, 0, Math.PI * 2);
+      scanCtx.arc(centerX, bottomY, 12, 0, Math.PI * 2);
       scanCtx.fill();
       scanCtx.strokeStyle = "#ffffff";
-      scanCtx.lineWidth = 2;
+      scanCtx.lineWidth = 2.5;
       scanCtx.stroke();
 
       scanCtx.fillStyle = "#ffffff";
@@ -898,11 +989,11 @@
       const topY = b.y + tuneRuler.topYNorm * b.h;
       const bottomY = b.y + tuneRuler.bottomYNorm * b.h;
       const centerX = b.x + tuneRuler.centerXNorm * b.w;
-      const tol = 36;
+      const tol = 38;
 
-      if (Math.abs(pt.y - topY) <= tol && Math.abs(pt.x - centerX) <= 75) {
+      if (Math.abs(pt.y - topY) <= tol && Math.abs(pt.x - centerX) <= 80) {
         activeDragHandle = 'top';
-      } else if (Math.abs(pt.y - bottomY) <= tol && Math.abs(pt.x - centerX) <= 75) {
+      } else if (Math.abs(pt.y - bottomY) <= tol && Math.abs(pt.x - centerX) <= 80) {
         activeDragHandle = 'bottom';
       } else if (pt.y > topY && pt.y < bottomY && Math.abs(pt.x - centerX) <= 45) {
         activeDragHandle = 'both';
@@ -1023,7 +1114,7 @@
 
         if (isSkeletonVisible) drawPitchingSkeleton(l, b.x, b.y, b.w, b.h, isRightPitcher);
 
-        // ⓪ 軸足バランス（脚上げ時の骨盤傾き）➔ ⚖️ バランス
+        // ⓪ 軸足バランス（脚上げ時の骨盤傾斜角）➔ ⚖️ バランス能力
         if (L_HIP && R_HIP) {
           const hipDx = (L_HIP.x - R_HIP.x) * b.w;
           const hipDy = (L_HIP.y - R_HIP.y) * b.h;
@@ -1032,7 +1123,7 @@
           document.getElementById('m0-val').textContent = `${tiltAngle} °`;
         }
 
-        // ① 捻転差判定 ➔ 🦴 柔軟性
+        // ① 捻転差（胸と腰の角度差）➔ 🦴 柔軟性（胸椎回旋）
         if (L_SHOULDER && R_SHOULDER && L_HIP && R_HIP) {
           const sDx = (L_SHOULDER.x - R_SHOULDER.x), sDz = ((L_SHOULDER.z || 0) - (R_SHOULDER.z || 0));
           const hDx = (L_HIP.x - R_HIP.x), hDz = ((L_HIP.z || 0) - (R_HIP.z || 0));
@@ -1048,7 +1139,7 @@
           document.getElementById('m1-val').textContent = twistLabel.split(' ')[0];
         }
 
-        // ② 前膝ブレーキ量 ➔ 🦘 瞬発力
+        // ② 前膝ブレーキ壁（前足の急停止伸展変化量）➔ 🦘 瞬発力（地面反力）
         if (frontHip && frontKnee && frontAnkle) {
           const rawAngle = calcJointAngle3D(frontHip, frontKnee, frontAnkle);
           if (Number.isFinite(rawAngle) && rawAngle >= 50 && rawAngle <= 180) {
@@ -1057,7 +1148,7 @@
           }
         }
 
-        // ③ 体幹前傾角度 ➔ 🦴 柔軟性
+        // ③ 体幹前傾（リリース時の上体前傾角度）➔ 🦴 柔軟性（股関節ヒンジ・もも裏）
         if (L_SHOULDER && R_SHOULDER && L_HIP && R_HIP) {
           const midS = { x: (L_SHOULDER.x + R_SHOULDER.x)/2, y: (L_SHOULDER.y + R_SHOULDER.y)/2 };
           const midH = { x: (L_HIP.x + R_HIP.x)/2, y: (L_HIP.y + R_HIP.y)/2 };
@@ -1068,12 +1159,17 @@
           }
         }
 
-        // ④ リリース高 ＆ 歩幅 ➔ 🧠 身体図式
+        // ④ リリース打点高 ＆ ステップ踏み出し左右ズレ ➔ 🧠 身体図式（脳内空間GPS）
         if (throwWrist && frontAnkle && pivotAnkle) {
           const groundY = Math.max(frontAnkle.y, pivotAnkle.y) * b.h;
           const rHeightCm = Math.round(Math.max(0, groundY - throwWrist.y * b.h) / activePxPerCm);
           currentState.releaseHeightCm = rHeightCm;
           document.getElementById('m4-val').textContent = `${rHeightCm} cm`;
+
+          // 正面・横向きに応じた空間ズレ算出
+          const stepDxPx = Math.abs((frontAnkle.x - pivotAnkle.x) * b.w);
+          const lateralDeviationCm = Math.round(stepDxPx / activePxPerCm);
+          currentState.stepLateralDeviationCm = lateralDeviationCm;
 
           const stepPx = Math.hypot((frontAnkle.x - pivotAnkle.x) * b.w, (frontAnkle.y - pivotAnkle.y) * b.h);
           const stepCm = Math.round(stepPx / activePxPerCm);
@@ -1081,11 +1177,12 @@
           currentState.strideCm = stepCm;
           currentState.strideRatio = stepPct;
 
-          if (stepCm > pitchingRecords.maxStrideCm && stepCm <= userHeightCm * 1.2) {
+          if (stepCm > pitchingRecords.maxStrideCm && stepCm <= userHeightCm * 1.25) {
             pitchingRecords.maxStrideCm = stepCm;
             pitchingRecords.maxStrideRatio = stepPct;
-            document.getElementById('m4-sub').textContent = `ステップ: ${stepCm}cm (${stepPct}%)`;
           }
+
+          document.getElementById('m4-sub').textContent = `ステップズレ: ${lateralDeviationCm}cm (${stepPct}%)`;
         }
       }
       outputCtx.restore();
@@ -1121,17 +1218,18 @@
       });
     }
 
+    // 投球5大指標 × 身体4大弱点「完全対照マトリクス」診断エンジン
     function generatePitchingCoachAdvice(rec) {
       const m = rec.metrics;
       let praises = [];
       let issues = [];
 
-      // 1. 前膝ブレーキ（🦘 瞬発力）の評価
+      // 1. 前膝ブレーキ壁（🦘 瞬発力・地面反力）の評価
       const kneeBrake = m.kneeBrake !== undefined && m.kneeBrake !== null ? m.kneeBrake : 10;
       if (kneeBrake >= 14) {
-        praises.push(`前膝の急ブレーキ【+${kneeBrake}°】で地面反力を逃さず伝達！`);
+        praises.push(`前膝の急ブレーキ【+${kneeBrake}°】で地面反力を100%ボールに伝達！`);
       } else {
-        const severity = (14 - kneeBrake) * 2.2; // 不足度
+        const severity = (14 - kneeBrake) * 2.3;
         issues.push({
           key: 'spring',
           severity: severity,
@@ -1139,12 +1237,12 @@
         });
       }
 
-      // 2. 軸足バランス（⚖️ バランス能力）の評価
+      // 2. 軸足バランス（⚖️ バランス能力・骨盤水平支持力）の評価
       const pivotBalance = m.pivotBalance !== undefined && m.pivotBalance !== null ? m.pivotBalance : 10;
       if (pivotBalance <= 8) {
-        praises.push(`脚上げ時の軸足バランス【傾き ${pivotBalance}°】が超安定！`);
+        praises.push(`脚上げ時の軸足バランス【傾き ${pivotBalance}°】でブレない土台！`);
       } else {
-        const severity = (pivotBalance - 8) * 1.8;
+        const severity = (pivotBalance - 8) * 2.2;
         issues.push({
           key: 'balance',
           severity: severity,
@@ -1152,7 +1250,7 @@
         });
       }
 
-      // 3. 体幹前傾・しなり（🦴 柔軟性）の評価
+      // 3. 体幹前傾 ＆ 捻転差（🦴 柔軟性・胸椎回旋・股関節ヒンジ）の評価
       const trunkTilt = m.trunkTilt !== undefined && m.trunkTilt !== null ? m.trunkTilt : 20;
       const twistLabel = m.twistStatus || "";
       let flexIssueScore = 0;
@@ -1166,10 +1264,10 @@
       }
 
       if (twistLabel.includes("手投げ") || twistLabel.includes("開き早い")) {
-        flexIssueScore += 18;
+        flexIssueScore += 20;
         flexText = flexText || `胸と腰が同時に回って手投げになっています。下半身先行のタメを作ろう！(🦴 胸椎回旋柔軟性)`;
       } else if (twistLabel.includes("タメ十分")) {
-        praises.push(`下半身先行のタメ（捻転差）が作れています！`);
+        praises.push(`下半身先行のタメ（捻転差）が綺麗に作れています！`);
       }
 
       if (flexIssueScore > 0) {
@@ -1180,26 +1278,36 @@
         });
       }
 
-      // 4. 歩幅 ＆ 空間認識（🧠 身体図式）の評価
-      const strideRatio = m.strideRatio !== undefined && m.strideRatio !== null ? m.strideRatio : 65;
-      if (strideRatio >= 75 && strideRatio <= 92) {
-        praises.push(`ステップ幅が身長の【${strideRatio}%】で理想的な体重移動！`);
-      } else if (strideRatio < 70) {
-        const severity = (70 - strideRatio) * 1.6;
+      // 4. リリース高バラつき ＆ ステップ踏み出し左右ズレ（🧠 身体図式・空間認識）の評価
+      const lateralDev = m.stepLateralDeviationCm !== undefined ? m.stepLateralDeviationCm : 0;
+      const releaseH = m.releaseH || 130;
+      let schemaIssueScore = 0;
+      let schemaText = "";
+
+      if (selectedAngleMode === 'FRONT' && lateralDev > 12) {
+        schemaIssueScore += (lateralDev - 12) * 2.0;
+        schemaText = `ステップの踏み出しが【左右に ${lateralDev}cm】狂っています。まっすぐ着地する脳内GPSを整えよう！(🧠 身体図式)`;
+      } else if (releaseH < 90) {
+        schemaIssueScore += 18;
+        schemaText = `リリースポイントが低く安定していません。空間内の指先位置を整えよう！(🧠 身体図式)`;
+      } else {
+        praises.push(`空間内のリリースポイントと手足の位置感覚がバッチリ！`);
+      }
+
+      if (schemaIssueScore > 0) {
         issues.push({
           key: 'schema',
-          severity: severity,
-          text: `ステップが短く、体重移動の距離感が掴めていません。脳内GPSを整えて踏み出そう！(🧠 身体図式)`
+          severity: schemaIssueScore,
+          text: schemaText
         });
       }
 
-      // 最も深刻度が高い弱点を特定（均等に4大弱点へ分岐）
+      // 深刻度順にソートし、最も根本的な弱点を確定
       let primaryWeakness = 'balance';
       if (issues.length > 0) {
         issues.sort((a, b) => b.severity - a.severity);
         primaryWeakness = issues[0].key;
       } else {
-        // 全て良好な場合は最も伸ばせる項目をローテーションで提案
         primaryWeakness = 'spring';
       }
 
@@ -1225,7 +1333,6 @@
       const all = getSavedPitchingRecords();
       const now = new Date();
 
-      // 未決定の場合はリアルタイム値から適切な値を安全に補完
       const currentKneeBrake = pitchingRecords.kneeBrakeDeg !== null
         ? pitchingRecords.kneeBrakeDeg
         : (currentState.frontKneeAngle > 0 ? Math.max(5, 180 - currentState.frontKneeAngle) : 8);
@@ -1238,7 +1345,8 @@
         trunkTilt: pitchingRecords.trunkTiltDeg !== null ? pitchingRecords.trunkTiltDeg : currentState.trunkTiltDeg,
         releaseH: pitchingRecords.releaseHeightCm !== null ? pitchingRecords.releaseHeightCm : currentState.releaseHeightCm,
         stride: pitchingRecords.maxStrideCm || currentState.strideCm,
-        strideRatio: pitchingRecords.maxStrideRatio || currentState.strideRatio
+        strideRatio: pitchingRecords.maxStrideRatio || currentState.strideRatio,
+        stepLateralDeviationCm: currentState.stepLateralDeviationCm
       };
 
       const diagnosis = generatePitchingCoachAdvice({ metrics: mObj });
@@ -1258,7 +1366,7 @@
       all.unshift(entry);
       localStorage.setItem(STORAGE_KEY, JSON.stringify(all));
 
-      // トップ画面の身体4大エンジンへ弱点フラグを同期
+      // トップ画面の身体4大エンジンへ弱点フラグを同期（黄色く点滅させる）
       updateBodyEngineAlert(diagnosis.weaknessKey);
 
       showToast(`✅ ${playerName}選手の投球カルテを保存しました！\n（身体弱点：${WEAKNESS_MAP[diagnosis.weaknessKey].title.split('（')[0]}）`);
@@ -1268,6 +1376,8 @@
     function updateBodyEngineAlert(weaknessKey) {
       try {
         let engine = JSON.parse(localStorage.getItem('baseball_body_engine_v1') || '{}');
+        // 全てのアラートをリセット後、検知された弱点のみ点滅アラート設定
+        Object.keys(engine).forEach(k => { if(engine[k]) engine[k].alert = false; });
         if (!engine[weaknessKey]) engine[weaknessKey] = {};
         engine[weaknessKey].alert = true;
         localStorage.setItem('baseball_body_engine_v1', JSON.stringify(engine));
@@ -1285,7 +1395,6 @@
       document.getElementById('weak-test-name').textContent = `▶ ${data.testName}`;
       document.getElementById('weak-test-effect').textContent = `💡 ${data.testEffect}`;
 
-      // リンク先パラメータ設定
       const link = document.getElementById('btn-go-body-test');
       link.href = `body_tests.html?test=${key}`;
 
@@ -1409,7 +1518,7 @@
 
       updateCardLabels();
 
-      // スキャン定規ドラッグイベント
+      // スキャン定規ドラッグイベント（ポインター・タッチ対応）
       scanCanvas.addEventListener('mousedown', onScanPointerDown);
       window.addEventListener('mousemove', onScanPointerMove);
       window.addEventListener('mouseup', onScanPointerUp);
@@ -1494,7 +1603,7 @@
         }, 150);
       });
 
-      // ★ 測定画面のシークバー操作（動画の自由な前後操作）
+      // 測定画面のシークバー操作（動画の自由な前後操作）
       const mainSeekBar = document.getElementById('seek-bar');
       mainSeekBar.addEventListener('input', (e) => {
         if (!Number.isFinite(videoElement.duration) || videoElement.duration === 0) return;
