@@ -1122,45 +1122,95 @@
     }
 
     function generatePitchingCoachAdvice(rec) {
-      let praises = [], improvements = [], primaryWeakness = 'balance';
       const m = rec.metrics;
+      let praises = [];
+      let issues = [];
 
-      // 1. 前膝ブレーキ ➔ 🦘 瞬発力
-      if (m.kneeBrake >= 15) {
-        praises.push(`前膝の急ブレーキ【+${m.kneeBrake}°】が完璧！地面反力が指先に伝わっています！`);
+      // 1. 前膝ブレーキ（🦘 瞬発力）の評価
+      const kneeBrake = m.kneeBrake !== undefined && m.kneeBrake !== null ? m.kneeBrake : 10;
+      if (kneeBrake >= 14) {
+        praises.push(`前膝の急ブレーキ【+${kneeBrake}°】で地面反力を逃さず伝達！`);
       } else {
-        improvements.push(`着地した前膝をピンと伸ばすイメージで急停止させよう！(🦘 瞬発力・地面反力)`);
+        const severity = (14 - kneeBrake) * 2.2; // 不足度
+        issues.push({
+          key: 'spring',
+          severity: severity,
+          text: `着地した前膝が曲がって沈んでいます。ガツンと突っ張って急停止させよう！(🦘 瞬発力・地面反力)`
+        });
+      }
+
+      // 2. 軸足バランス（⚖️ バランス能力）の評価
+      const pivotBalance = m.pivotBalance !== undefined && m.pivotBalance !== null ? m.pivotBalance : 10;
+      if (pivotBalance <= 8) {
+        praises.push(`脚上げ時の軸足バランス【傾き ${pivotBalance}°】が超安定！`);
+      } else {
+        const severity = (pivotBalance - 8) * 1.8;
+        issues.push({
+          key: 'balance',
+          severity: severity,
+          text: `一本足で立った瞬間に骨盤が三塁側へ崩れています。水平をキープしよう！(⚖️ 軸足バランス支持力)`
+        });
+      }
+
+      // 3. 体幹前傾・しなり（🦴 柔軟性）の評価
+      const trunkTilt = m.trunkTilt !== undefined && m.trunkTilt !== null ? m.trunkTilt : 20;
+      const twistLabel = m.twistStatus || "";
+      let flexIssueScore = 0;
+      let flexText = "";
+
+      if (trunkTilt >= 28 && trunkTilt <= 45) {
+        praises.push(`リリース時の前傾【${trunkTilt}°】で低めに糸を引く球筋！`);
+      } else if (trunkTilt < 25) {
+        flexIssueScore += (25 - trunkTilt) * 2.0;
+        flexText = `上体が起きて棒立ち気味です。前足の股関節を引き込んで胸を押し出そう！(🦴 股関節・胸椎柔軟性)`;
+      }
+
+      if (twistLabel.includes("手投げ") || twistLabel.includes("開き早い")) {
+        flexIssueScore += 18;
+        flexText = flexText || `胸と腰が同時に回って手投げになっています。下半身先行のタメを作ろう！(🦴 胸椎回旋柔軟性)`;
+      } else if (twistLabel.includes("タメ十分")) {
+        praises.push(`下半身先行のタメ（捻転差）が作れています！`);
+      }
+
+      if (flexIssueScore > 0) {
+        issues.push({
+          key: 'flex',
+          severity: flexIssueScore,
+          text: flexText
+        });
+      }
+
+      // 4. 歩幅 ＆ 空間認識（🧠 身体図式）の評価
+      const strideRatio = m.strideRatio !== undefined && m.strideRatio !== null ? m.strideRatio : 65;
+      if (strideRatio >= 75 && strideRatio <= 92) {
+        praises.push(`ステップ幅が身長の【${strideRatio}%】で理想的な体重移動！`);
+      } else if (strideRatio < 70) {
+        const severity = (70 - strideRatio) * 1.6;
+        issues.push({
+          key: 'schema',
+          severity: severity,
+          text: `ステップが短く、体重移動の距離感が掴めていません。脳内GPSを整えて踏み出そう！(🧠 身体図式)`
+        });
+      }
+
+      // 最も深刻度が高い弱点を特定（均等に4大弱点へ分岐）
+      let primaryWeakness = 'balance';
+      if (issues.length > 0) {
+        issues.sort((a, b) => b.severity - a.severity);
+        primaryWeakness = issues[0].key;
+      } else {
+        // 全て良好な場合は最も伸ばせる項目をローテーションで提案
         primaryWeakness = 'spring';
       }
 
-      // 2. 軸足バランス ➔ ⚖️ バランス能力
-      if (m.pivotBalance <= 8) {
-        praises.push(`脚上げ時の軸足バランス【傾き ${m.pivotBalance}°】が超安定！`);
-      } else {
-        improvements.push(`一本足で立ったときに骨盤を水平にキープしよう！(⚖️ 軸足バランス支持力)`);
-        primaryWeakness = 'balance';
-      }
-
-      // 3. 体幹前傾 ➔ 🦴 柔軟性
-      if (m.trunkTilt >= 28 && m.trunkTilt <= 45) {
-        praises.push(`リリース時の前傾【${m.trunkTilt}°】で低めに糸を引くボールが投げられます！`);
-      } else if (m.trunkTilt < 25) {
-        improvements.push(`前足の股関節を折り込み、胸をキャッチャーへ押し出そう！(🦴 股関節・胸椎柔軟性)`);
-        if (primaryWeakness !== 'balance') primaryWeakness = 'flex';
-      }
-
-      // 4. ステップ幅
-      if (m.strideRatio >= 75 && m.strideRatio <= 90) {
-        praises.push(`ステップ幅が身長の【${m.strideRatio}%】で理想的な体重移動です！`);
-      } else if (m.strideRatio < 70) {
-        improvements.push(`もう少し力強く踏み出して推進力を使おう！(🦘 下半身バネ)`);
-      }
+      const adviceImprovements = issues.length > 0
+        ? issues.slice(0, 2).map(i => "・" + i.text).join("\n")
+        : "・現在の素晴らしいフォームバランスをキープしよう！";
 
       return {
         text: "【🤖 投球AI診断】\n🌟 ナイス:\n" +
           (praises.length > 0 ? praises.slice(0, 2).map(p => "・" + p).join("\n") : "・腕を振って力強く投げられています！") +
-          "\n\n🎯 覚醒ポイント:\n" +
-          (improvements.length > 0 ? improvements.slice(0, 1).map(i => "・" + i).join("\n") : "・今の素晴らしいフォームバランスをキープしよう！"),
+          "\n\n🎯 覚醒ポイント:\n" + adviceImprovements,
         weaknessKey: primaryWeakness
       };
     }
@@ -1174,11 +1224,17 @@
       playTone(520, 0.1);
       const all = getSavedPitchingRecords();
       const now = new Date();
+
+      // 未決定の場合はリアルタイム値から適切な値を安全に補完
+      const currentKneeBrake = pitchingRecords.kneeBrakeDeg !== null
+        ? pitchingRecords.kneeBrakeDeg
+        : (currentState.frontKneeAngle > 0 ? Math.max(5, 180 - currentState.frontKneeAngle) : 8);
+
       const mObj = {
         pivotBalance: pitchingRecords.topPivotBalanceDeg !== null ? pitchingRecords.topPivotBalanceDeg : currentState.pivotBalanceDeg,
         twistStatus: pitchingRecords.twistStatus || currentState.twistStatus,
         kneeAngle: currentState.frontKneeAngle,
-        kneeBrake: pitchingRecords.kneeBrakeDeg !== null ? pitchingRecords.kneeBrakeDeg : 18,
+        kneeBrake: currentKneeBrake,
         trunkTilt: pitchingRecords.trunkTiltDeg !== null ? pitchingRecords.trunkTiltDeg : currentState.trunkTiltDeg,
         releaseH: pitchingRecords.releaseHeightCm !== null ? pitchingRecords.releaseHeightCm : currentState.releaseHeightCm,
         stride: pitchingRecords.maxStrideCm || currentState.strideCm,
@@ -1205,7 +1261,7 @@
       // トップ画面の身体4大エンジンへ弱点フラグを同期
       updateBodyEngineAlert(diagnosis.weaknessKey);
 
-      showToast(`✅ ${playerName}選手の投球カルテを保存しました！\n（身体弱点：${WEAKNESS_MAP[diagnosis.weaknessKey].title}）`);
+      showToast(`✅ ${playerName}選手の投球カルテを保存しました！\n（身体弱点：${WEAKNESS_MAP[diagnosis.weaknessKey].title.split('（')[0]}）`);
       populatePastPlayers();
     }
 
@@ -1298,7 +1354,7 @@
             </div>
             
             <div class="text-[11px] text-slate-300 grid grid-cols-2 gap-1 py-0.5">
-              <span>前膝ブレーキ: <b>${m.kneeBrake || '--'}°</b></span>
+              <span>前膝ブレーキ: <b>${m.kneeBrake !== undefined && m.kneeBrake !== null ? '+' + m.kneeBrake + '°' : '--'}</b></span>
               <span>体幹前傾: <b>${m.trunkTilt || '--'}°</b></span>
               <span>軸足バランス: <b>${m.pivotBalance || '--'}°</b></span>
               <span>リリース高: <b>${m.releaseH || '--'}cm</b></span>
@@ -1438,6 +1494,26 @@
         }, 150);
       });
 
+      // ★ 測定画面のシークバー操作（動画の自由な前後操作）
+      const mainSeekBar = document.getElementById('seek-bar');
+      mainSeekBar.addEventListener('input', (e) => {
+        if (!Number.isFinite(videoElement.duration) || videoElement.duration === 0) return;
+        videoElement.pause();
+        const btnPlay = document.getElementById('btn-play-pause');
+        btnPlay.textContent = "再生 ▶";
+        btnPlay.className = "btn-3d py-1 rounded-lg bg-amber-500 text-slate-950 border border-amber-300 text-[11px] font-black";
+
+        videoElement.currentTime = (e.target.value / 100) * videoElement.duration;
+        document.getElementById('time-disp').textContent = `${videoElement.currentTime.toFixed(2)} / ${videoElement.duration.toFixed(2)}`;
+        processSingleFrame();
+      });
+
+      videoElement.addEventListener('seeked', () => {
+        if (document.getElementById('view-step4')?.classList.contains('active')) {
+          processSingleFrame();
+        }
+      });
+
       // 再生制御
       const btnPlay = document.getElementById('btn-play-pause');
       btnPlay.addEventListener('click', () => {
@@ -1467,18 +1543,23 @@
       document.getElementById('btn-frame-prev').addEventListener('click', () => {
         videoElement.pause();
         videoElement.currentTime = Math.max(0, videoElement.currentTime - 0.033);
+        document.getElementById('seek-bar').value = (videoElement.currentTime / (videoElement.duration || 1)) * 100;
+        document.getElementById('time-disp').textContent = `${videoElement.currentTime.toFixed(2)} / ${(videoElement.duration || 0).toFixed(2)}`;
         processSingleFrame();
       });
+
       document.getElementById('btn-frame-next').addEventListener('click', () => {
         videoElement.pause();
         videoElement.currentTime = Math.min(videoElement.duration || 0, videoElement.currentTime + 0.033);
+        document.getElementById('seek-bar').value = (videoElement.currentTime / (videoElement.duration || 1)) * 100;
+        document.getElementById('time-disp').textContent = `${videoElement.currentTime.toFixed(2)} / ${(videoElement.duration || 0).toFixed(2)}`;
         processSingleFrame();
       });
 
       // 脚上げ・放出決定
       document.getElementById('btn-set-top').addEventListener('click', () => {
         pitchingRecords.topPivotBalanceDeg = currentState.pivotBalanceDeg;
-        document.getElementById('m0-sub').textContent = `トップ決定: ${currentState.pivotBalanceDeg}°`;
+        document.getElementById('m0-sub').textContent = `脚上げ決定: ${currentState.pivotBalanceDeg}°`;
         playTone(660, 0.1, 'triangle');
         showToast(`🎯 脚上げ時の軸足バランス【${currentState.pivotBalanceDeg}°】を固定！`);
       });
@@ -1486,11 +1567,12 @@
       document.getElementById('btn-set-release').addEventListener('click', () => {
         pitchingRecords.trunkTiltDeg = currentState.trunkTiltDeg;
         pitchingRecords.releaseHeightCm = currentState.releaseHeightCm;
-        pitchingRecords.kneeBrakeDeg = Math.max(5, 180 - currentState.frontKneeAngle);
-        document.getElementById('m2-sub').textContent = `ブレーキ: +${pitchingRecords.kneeBrakeDeg}° (壁)`;
+        const currentKnee = currentState.frontKneeAngle || 160;
+        pitchingRecords.kneeBrakeDeg = Math.max(0, 180 - currentKnee);
+        document.getElementById('m2-sub').textContent = `ブレーキ決定: +${pitchingRecords.kneeBrakeDeg}°`;
         document.getElementById('m3-sub').textContent = `放出時: ${currentState.trunkTiltDeg}°`;
         playTone(880, 0.12, 'triangle');
-        showToast(`💥 放出の瞬間（体幹前傾＆前膝壁）を記録！`);
+        showToast(`💥 放出の瞬間（前膝ブレーキ壁 +${pitchingRecords.kneeBrakeDeg}° / 体幹前傾 ${currentState.trunkTiltDeg}°）を記録！`);
       });
 
       // 保存・モーダル操作
