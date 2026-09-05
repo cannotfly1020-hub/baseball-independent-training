@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>ジュニア野球AI - 覚醒ドック</title>
+<link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@700;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg-navy: #0F172A;
+    --bg-slate: #1E293B;
+    --emerald-top: #22D3EE;
+    --emerald-bottom: #0891B2;
+    --batting-top: #34D399;
+    --batting-bottom: #059669;
+    --pitching-top: #38BDF8;
+    --pitching-bottom: #0284C7;
+    --gold: #FBBF24;
+    --gold-dark: #B45309;
+    --alert-yellow: #FEF08A;
+    --alert-glow: #EAB308;
+    --cyan: #22D3EE;
+    --orange: #FB923C;
+    --white: #FFFFFF;
+    --black-shadow: rgba(0,0,0,0.6);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; user-select: none; -webkit-tap-highlight-color: transparent; }
+  
+  body {
+    font-family: 'M PLUS Rounded 1c', "Hiragino Maru Gothic ProN", sans-serif;
+    background: radial-gradient(circle at top, var(--bg-slate), var(--bg-navy));
+    color: var(--white);
+    height: 100dvh;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    background-image: 
+      linear-gradient(45deg, rgba(255,255,255,0.03) 25%, transparent 25%, transparent 75%, rgba(255,255,255,0.03) 75%, rgba(255,255,255,0.03)),
+      linear-gradient(45deg, rgba(255,255,255,0.03) 25%, transparent 25%, transparent 75%, rgba(255,255,255,0.03) 75%, rgba(255,255,255,0.03));
+    background-size: 20px 20px;
+    background-position: 0 0, 10px 10px;
+  }
+
+  #app {
+    width: 100%;
+    max-width: 430px;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    padding: 10px 12px;
+    position: relative;
+  }
+
+  /* --- Header --- */
+  header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+    height: 48px;
+    flex-shrink: 0;
+  }
+  .header-badge {
+    background: linear-gradient(180deg, #475569, #1E293B);
+    border: 2px solid #000;
+    border-radius: 24px;
+    padding: 4px 10px;
+    box-shadow: 0 3px 0 #000;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    font-weight: 900;
+    white-space: nowrap;
+  }
+  .trophy-sec { flex: 1; position: relative; }
+  .trophy-text { color: var(--gold); -webkit-text-stroke: 0.5px #000; }
+  .progress-bg {
+    width: 100%; height: 6px; background: #000; border-radius: 3px; margin-top: 2px;
+  }
+  .progress-fill {
+    width: 85%; height: 100%; background: var(--gold); border-radius: 3px;
+  }
+  .streak-sec { color: #FFA133; -webkit-text-stroke: 0.5px #000; }
+  .settings-btn {
+    width: 40px; height: 40px; border-radius: 50%;
+    background: #334155; border: 2px solid #000;
+    box-shadow: 0 3px 0 #000;
+    display: flex; justify-content: center; align-items: center;
+    font-size: 20px; cursor: pointer; transition: transform 0.1s;
+  }
+  .settings-btn:active { transform: translateY(3px); box-shadow: 0 0 0 #000; }
+
+  /* --- Avatar Area --- */
+  .avatar-container {
+    flex: 1; display: flex; flex-direction: column;
+    justify-content: center; align-items: center;
+    position: relative; min-height: 120px;
+  }
+  .speech-bubble {
+    position: absolute; top: -10px; z-index: 10;
+    background: #FFF; color: #000; padding: 8px 14px;
+    border-radius: 16px; border: 3px solid #000;
+    font-weight: 900; font-size: 13px;
+    box-shadow: 0 4px 0 #000;
+    opacity: 0; transform: scale(0.5) translateY(10px);
+    transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    pointer-events: none; max-width: 90%; text-align: center;
+  }
+  .speech-bubble::after {
+    content: ''; position: absolute; bottom: -8px; left: 50%;
+    margin-left: -8px; border-width: 8px 8px 0;
+    border-style: solid; border-color: #000 transparent transparent transparent;
+  }
+  .speech-bubble.show { opacity: 1; transform: scale(1) translateY(0); }
+  
+  .avatar-visual {
+    width: 100px; height: 100px;
+    background: linear-gradient(45deg, #FF6B6B, #FFD93D);
+    border: 4px solid #FFF; box-shadow: 0 6px 0 #000, inset 0 -10px rgba(0,0,0,0.2);
+    border-radius: 50%; display: flex; justify-content: center; align-items: center;
+    font-size: 50px; cursor: pointer; z-index: 5;
+    transition: transform 0.1s;
+  }
+  .avatar-visual.bounce { animation: pyon 0.4s ease; }
+  @keyframes pyon {
+    0% { transform: scale(1) translateY(0); }
+    40% { transform: scale(0.8, 1.2) translateY(-20px); }
+    60% { transform: scale(1.1, 0.9) translateY(0); }
+    80% { transform: scale(0.95, 1.05) translateY(-5px); }
+    100% { transform: scale(1) translateY(0); }
+  }
+
+  .avatar-info {
+    margin-top: 12px; background: rgba(0,0,0,0.5);
+    padding: 6px 16px; border-radius: 20px;
+    font-size: 12px; font-weight: 900;
+    border: 1px solid rgba(255,255,255,0.2);
+  }
+
+  /* --- Body Engine Dock (2x2 Grid) --- */
+  .engine-grid {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 8px; margin-bottom: 12px; flex-shrink: 0;
+  }
+  .engine-card {
+    background: linear-gradient(180deg, #334155, #0F172A);
+    border: 2px solid #000; border-radius: 12px;
+    box-shadow: inset 0 2px rgba(255,255,255,0.2), 0 4px 0 #000;
+    padding: 10px; position: relative; cursor: pointer;
+    transition: transform 0.1s;
+  }
+  .engine-card:active { transform: translateY(2px); box-shadow: inset 0 2px rgba(255,255,255,0.2), 0 2px 0 #000; }
+  .card-title { font-size: 11px; font-weight: 900; color: #94A3B8; margin-bottom: 4px; display: flex; align-items: center; gap: 4px; }
+  .card-value { font-size: 15px; font-weight: 900; color: #FFF; -webkit-text-stroke: 0.5px #000; margin-bottom: 2px; }
+  .card-status { font-size: 11px; font-weight: 900; }
+  
+  /* Status Colors */
+  .color-gold { color: var(--gold); text-shadow: 1px 1px 0 #000; }
+  .color-cyan { color: var(--cyan); text-shadow: 1px 1px 0 #000; }
+  .color-orange { color: var(--orange); text-shadow: 1px 1px 0 #000; }
+  
+  /* Alert Style */
+  .engine-card.alert {
+    border-color: var(--alert-glow);
+    animation: alertPulse 1.5s infinite;
+  }
+  .engine-card.alert .card-status { color: var(--alert-yellow); text-shadow: 1px 1px 0 #000; }
+  @keyframes alertPulse {
+    0% { box-shadow: inset 0 2px rgba(255,255,255,0.2), 0 4px 0 #000, 0 0 5px rgba(234,179,8,0.2); }
+    50% { box-shadow: inset 0 2px rgba(255,255,255,0.2), 0 4px 0 #000, 0 0 15px rgba(234,179,8,0.8); }
+    100% { box-shadow: inset 0 2px rgba(255,255,255,0.2), 0 4px 0 #000, 0 0 5px rgba(234,179,8,0.2); }
+  }
+
+  /* --- 2 Big Action Buttons --- */
+  .action-buttons {
+    display: flex; flex-direction: column; gap: 12px;
+    margin-bottom: 12px; flex-shrink: 0;
+  }
+  .brawl-btn {
+    width: 100%; padding: 16px 12px;
+    border-radius: 16px; border: 3px solid #FFF;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    cursor: pointer; text-align: center;
+    transition: transform 0.1s, box-shadow 0.1s;
+    position: relative; overflow: hidden;
+  }
+  .brawl-btn::before { /* Inner highlight for 3D */
+    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 30%;
+    background: linear-gradient(180deg, rgba(255,255,255,0.4), transparent);
+  }
+  .btn-batting {
+    background: linear-gradient(180deg, var(--batting-top), var(--batting-bottom));
+    border-color: var(--gold);
+    box-shadow: 0 6px 0 #064E3B, 0 8px 15px var(--black-shadow);
+  }
+  .btn-pitching {
+    background: linear-gradient(180deg, var(--pitching-top), var(--pitching-bottom));
+    border-color: #FFF;
+    box-shadow: 0 6px 0 #0369A1, 0 8px 15px var(--black-shadow);
+  }
+  .brawl-btn:active {
+    transform: translateY(6px);
+  }
+  .btn-batting:active { box-shadow: 0 0 0 #064E3B, 0 2px 5px var(--black-shadow); }
+  .btn-pitching:active { box-shadow: 0 0 0 #0369A1, 0 2px 5px var(--black-shadow); }
+  
+  .btn-main-text {
+    font-size: 18px; font-weight: 900; color: #FFF;
+    -webkit-text-stroke: 1px #000; text-shadow: 2px 2px 0 #000;
+    line-height: 1.2; z-index: 1; margin-bottom: 4px;
+  }
+  .btn-sub-text {
+    font-size: 11px; font-weight: 700; color: #FFF;
+    background: rgba(0,0,0,0.4); padding: 2px 8px; border-radius: 10px;
+    z-index: 1;
+  }
+
+  /* --- Footer Nav --- */
+  footer {
+    display: flex; gap: 8px; flex-shrink: 0;
+  }
+  .sub-btn {
+    flex: 1; background: #334155; border: 2px solid #000;
+    box-shadow: 0 4px 0 #000; border-radius: 10px;
+    padding: 10px 0; text-align: center; font-size: 11px;
+    font-weight: 900; cursor: pointer; color: #FFF;
+  }
+  .sub-btn:active { transform: translateY(4px); box-shadow: 0 0 0 #000; }
+
+  /* --- Modal System --- */
+  .modal-overlay {
+    position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+    background: rgba(0,0,0,0.8); z-index: 100;
+    display: flex; justify-content: center; align-items: center;
+    opacity: 0; pointer-events: none; transition: opacity 0.2s;
+  }
+  .modal-overlay.active { opacity: 1; pointer-events: auto; }
+  
+  .modal-content {
+    background: linear-gradient(180deg, #1E293B, #0F172A);
+    border: 4px solid var(--emerald-top); border-radius: 20px;
+    width: 90%; max-width: 350px; padding: 20px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.8), inset 0 2px rgba(255,255,255,0.2);
+    transform: scale(0.8) translateY(20px); transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    text-align: center;
+  }
+  .modal-overlay.active .modal-content { transform: scale(1) translateY(0); }
+  .modal-title { font-size: 18px; font-weight: 900; margin-bottom: 12px; color: var(--gold); -webkit-text-stroke: 0.5px #000; }
+  .modal-desc { font-size: 14px; font-weight: 700; line-height: 1.5; margin-bottom: 20px; }
+  .close-btn {
+    background: #E11D48; border: 2px solid #000; color: #FFF; font-weight: 900;
+    padding: 10px 30px; border-radius: 12px; box-shadow: 0 4px 0 #9F1239; cursor: pointer;
+  }
+  .close-btn:active { transform: translateY(4px); box-shadow: 0 0 0 #9F1239; }
+
+</style>
+</head>
+<body>
+
+<div id="app">
+  <!-- 1. Header (Trophy & Streak) -->
+  <header>
+    <div class="header-badge trophy-sec" onclick="ui.playClick()">
+      🏆 <span class="trophy-text" id="ui-trophies">1,450 / 1,600</span>
+      <span style="font-size: 10px; opacity:0.8;" id="ui-rank">ゴールドⅠ</span>
+      <div style="position:absolute; bottom:2px; left:10px; right:10px;">
+        <div class="progress-bg"><div class="progress-fill"></div></div>
+      </div>
+    </div>
+    <div class="header-badge streak-sec" onclick="ui.playClick()">
+      🔥 <span id="ui-streak">5日連続！(EXP1.5倍)</span>
+    </div>
+    <div class="settings-btn" onclick="ui.showModal('⚙️ プレイヤー設定', '選手名や所属チームの変更画面がここに開くぞ！')">⚙️</div>
+  </header>
+
+  <!-- 2. Avatar Area -->
+  <section class="avatar-container">
+    <div class="speech-bubble" id="speechBubble">バットの芯で捉える感覚、研ぎ澄まそうぜ！</div>
+    <div class="avatar-visual" id="avatarVisual">👦🏽⚾️</div>
+    <div class="avatar-info">
+      👤 <span id="ui-name">タイガ</span> (Lv.<span id="ui-level">14</span>) ＋ ⚡ 身体エンジン総合
+    </div>
+  </section>
+
+  <!-- 3. Engine Grid (2x2) -->
+  <section class="engine-grid">
+    <!-- Schema -->
+    <div class="engine-card" id="card-schema" onclick="ui.handleCardClick('schema')">
+      <div class="card-title">🕹️ じぶん操作力</div>
+      <div class="card-value" id="val-schema">ズレ: 4 cm</div>
+      <div class="card-status color-gold" id="stat-schema">【★ 覚醒度 85%】</div>
+    </div>
+    <!-- Flex -->
+    <div class="engine-card alert" id="card-flex" onclick="ui.handleCardClick('flex')">
+      <div class="card-title">🏹 飛距離のしなり</div>
+      <div class="card-value" id="val-flex">回旋: 38°</div>
+      <div class="card-status" id="stat-flex">【🔒 あと12°で覚醒！】</div>
+    </div>
+    <!-- Balance -->
+    <div class="engine-card" id="card-balance" onclick="ui.handleCardClick('balance')">
+      <div class="card-title">⚓ 崩れない軸足</div>
+      <div class="card-value" id="val-balance">キープ: 25 秒</div>
+      <div class="card-status color-cyan" id="stat-balance">【🌟 MASTER達成！】</div>
+    </div>
+    <!-- Spring -->
+    <div class="engine-card" id="card-spring" onclick="ui.handleCardClick('spring')">
+      <div class="card-title">💥 爆発バネ</div>
+      <div class="card-value" id="val-spring">バネ: 32 cm</div>
+      <div class="card-status color-orange" id="stat-spring">【⚡ LEVEL 2】</div>
+    </div>
+  </section>
+
+  <!-- 4. Action Buttons -->
+  <section class="action-buttons">
+    <div class="brawl-btn btn-batting" onclick="ui.navigate('batting.html')">
+      <div class="btn-main-text">🏏 打撃をAI分析する</div>
+      <div class="btn-sub-text">スイングの弱点を暴いて、ホームランパワー解放！</div>
+    </div>
+    <div class="brawl-btn btn-pitching" onclick="ui.navigate('pitching.html')">
+      <div class="btn-main-text">⚾ 投球・送球をAI分析する</div>
+      <div class="btn-sub-text">フォームの弱点を暴いて、剛速球・レーザービーム！</div>
+    </div>
+  </section>
+
+  <!-- 5. Footer Nav -->
+  <footer>
+    <div class="sub-btn" onclick="ui.showModal('📋 成長カルテ', 'これまでの測定データやAI解析の履歴グラフが表示されるぞ！')">📋 成長カルテ・履歴</div>
+    <div class="sub-btn" onclick="ui.showModal('🏃 身体テスト', 'AI解析なしで直接「足踏み」「胸椎回旋」などのテストを行うモードだ！')">🏃 身体テスト単体</div>
+  </footer>
+</div>
+
+<!-- Reusable Modal -->
+<div class="modal-overlay" id="globalModal">
+  <div class="modal-content">
+    <div class="modal-title" id="modalTitle">タイトル</div>
+    <div class="modal-desc" id="modalDesc">説明文</div>
+    <button class="close-btn" onclick="ui.closeModal()">OK！</button>
+  </div>
+</div>
+
+<script>
+/**
+ * --- Web Audio API (レトロゲーム風サウンドジェネレーター) ---
+ */
+const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+const SoundPlayer = {
+  init() {
+    if (audioCtx.state === 'suspended') audioCtx.resume();
+  },
+  playClick() {
+    this.init();
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+    osc.type = 'square';
+    osc.frequency.setValueAtTime(800, audioCtx.currentTime);
+    osc.frequency.exponentialRampToValueAtTime(300, audioCtx.currentTime + 0.1);
+    gain.gain.setValueAtTime(0.05, audioCtx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.1);
+    osc.connect(gain); gain.connect(audioCtx.destination);
+    osc.start(); osc.stop(audioCtx.currentTime + 0.1);
+  },
+  playBoing() {
+    this.init();
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(300, audioCtx.currentTime);
+    osc.frequency.exponentialRampToValueAtTime(900, audioCtx.currentTime + 0.3);
+    gain.gain.setValueAtTime(0.2, audioCtx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
+    osc.connect(gain); gain.connect(audioCtx.destination);
+    osc.start(); osc.stop(audioCtx.currentTime + 0.3);
+  },
+  playAction() {
+    this.init();
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+    osc.type = 'sawtooth';
+    osc.frequency.setValueAtTime(400, audioCtx.currentTime);
+    osc.frequency.linearRampToValueAtTime(1200, audioCtx.currentTime + 0.2);
+    gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
+    gain.gain.linearRampToValueAtTime(0.01, audioCtx.currentTime + 0.2);
+    osc.connect(gain); gain.connect(audioCtx.destination);
+    osc.start(); osc.stop(audioCtx.currentTime + 0.2);
+  }
+};
+
+/**
+ * --- LocalStorage Data Management ---
+ */
+const DATA_PROFILE_KEY = 'baseball_user_profile';
+const DATA_ENGINE_KEY = 'baseball_body_engine_v1';
+
+const defaultProfile = {
+  name: "タイガ", level: 14, height: 140, trophies: 1450, rank: "ゴールドⅠ", streak: 5, team: "安岡少年軟式野球部"
+};
+const defaultEngine = {
+  schema: { val: 4, unit: "cm", status: "【★ 覚醒度 85%】", alert: false, prefix: "ズレ" },
+  flex: { val: 38, unit: "°", status: "【🔒 あと12°で覚醒！】", alert: true, prefix: "回旋" },
+  balance: { val: 25, unit: "秒", status: "【🌟 MASTER達成！】", alert: false, prefix: "キープ" },
+  spring: { val: 32, unit: "cm", status: "【⚡ LEVEL 2】", alert: false, prefix: "バネ" }
+};
+
+function getStorageData(key, defaultData) {
+  const data = localStorage.getItem(key);
+  if (!data) {
+    localStorage.setItem(key, JSON.stringify(defaultData));
+    return defaultData;
+  }
+  return JSON.parse(data);
+}
+
+/**
+ * --- UI Controller & Interactivity ---
+ */
+const ui = {
+  quotes: [
+    "バットの芯で捉える感覚、研ぎ澄まそうぜ！",
+    "今日も鋭いスイングと剛速球を撮ろうぜ！",
+    "昨日のストレッチで背中がしなってるぞ！",
+    "踏み込み足でしっかりブレーキかけろよ！",
+    "毎日の積み重ねがホームランを生むぞ！"
+  ],
+  
+  init() {
+    // Load Data
+    const profile = getStorageData(DATA_PROFILE_KEY, defaultProfile);
+    const engine = getStorageData(DATA_ENGINE_KEY, defaultEngine);
+
+    // Apply Profile
+    document.getElementById('ui-name').textContent = profile.name;
+    document.getElementById('ui-level').textContent = profile.level;
+    document.getElementById('ui-trophies').textContent = `${profile.trophies} / 1,600`;
+    document.getElementById('ui-rank').textContent = profile.rank;
+    document.getElementById('ui-streak').textContent = `${profile.streak}日連続！(EXP1.5倍)`;
+
+    // Apply Engine Data
+    const keys = ['schema', 'flex', 'balance', 'spring'];
+    keys.forEach(k => {
+      const elVal = document.getElementById(`val-${k}`);
+      const elStat = document.getElementById(`stat-${k}`);
+      const elCard = document.getElementById(`card-${k}`);
+      
+      elVal.textContent = `${engine[k].prefix}: ${engine[k].val} ${engine[k].unit}`;
+      elStat.textContent = engine[k].status;
+      
+      if (engine[k].alert) {
+        elCard.classList.add('alert');
+      } else {
+        elCard.classList.remove('alert');
+      }
+    });
+
+    // Avatar Tap Event
+    const avatar = document.getElementById('avatarVisual');
+    const bubble = document.getElementById('speechBubble');
+    
+    avatar.addEventListener('click', () => {
+      SoundPlayer.playBoing();
+      // Remove class to re-trigger animation
+      avatar.classList.remove('bounce');
+      void avatar.offsetWidth; // trigger reflow
+      avatar.classList.add('bounce');
+      
+      // Random Quote
+      const randQ = this.quotes[Math.floor(Math.random() * this.quotes.length)];
+      bubble.textContent = randQ;
+      bubble.classList.add('show');
+      
+      // Hide bubble after 3s
+      clearTimeout(this.bubbleTimer);
+      this.bubbleTimer = setTimeout(() => {
+        bubble.classList.remove('show');
+      }, 3000);
+    });
+  },
+
+  playClick() {
+    SoundPlayer.playClick();
+  },
+
+  handleCardClick(type) {
+    SoundPlayer.playClick();
+    const info = {
+      schema: { t: "🕹️ じぶん操作力 (脳内GPS)", d: "自分の身体のイメージと実際のズレをなくす能力だ。ズレが減ると、バットの芯で捉える確率が大幅アップするぞ！" },
+      flex: { t: "🏹 飛距離・球速のしなり", d: "胸椎（背骨）の回旋能力だ。背中がムチのようにしなることで、打球の飛距離と球速がグンと伸びる！" },
+      balance: { t: "⚓ 崩れない鉄壁の軸足", d: "片足立ちでの安定力だ。変化球に崩されず、どんなコースでも強いスイングで打ち返せるぞ！" },
+      spring: { t: "💥 インパクト爆発バネ", d: "地面反力とブレーキ力だ。踏み込んだ前足で壁を作り、爆発的なパワーをボールに伝える！" }
+    };
+    this.showModal(info[type].t, info[type].d);
+  },
+
+  showModal(title, desc) {
+    document.getElementById('modalTitle').textContent = title;
+    document.getElementById('modalDesc').textContent = desc;
+    document.getElementById('globalModal').classList.add('active');
+  },
+
+  closeModal() {
+    SoundPlayer.playClick();
+    document.getElementById('globalModal').classList.remove('active');
+  },
+
+  navigate(url) {
+    SoundPlayer.playAction();
+    // Simulate transition delay for sound to play
+    setTimeout(() => {
+      // In a real app, this would be: window.location.href = url;
+      this.showModal('🚀 画面遷移モック', `【${url}】へ遷移します。\n※カメラ起動・AI解析画面へ進みます！`);
+    }, 200);
+  }
+};
+
+// Initialize app on load
+window.addEventListener('DOMContentLoaded', () => {
+  ui.init();
+});
+</script>
+</body>
+</html>
