@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-  <title>投球・送球AIバイオメカニクス - 身体弱点診断</title>
+  <title>投球・送球AIバイオメカニクス - 完全統合マスター版</title>
   <script src="https://cdn.tailwindcss.com"></script>
   
   <!-- MediaPipe CDN -->
@@ -21,7 +21,6 @@
       --card-dark: #131c31;
       --card-border: #223254;
       --gold-primary: #f59e0b;
-      --gold-shadow: #b45309;
       --sky-primary: #0284c7;
       --sky-light: #38bdf8;
       --emerald-primary: #10b981;
@@ -189,7 +188,7 @@
       align-items: center;
       justify-content: center;
       flex: 1;
-      min-height: 120px;
+      min-height: 110px;
       touch-action: none;
       border: 2px solid #38bdf8;
       box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.6);
@@ -213,25 +212,26 @@
       touch-action: none;
     }
 
+    /* 6大指標ダッシュボードグリッド（5大連鎖＋ステップ幅） */
     .dashboard {
       display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 4px;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 3px;
       width: 100%;
       flex-shrink: 0;
     }
 
     @media (min-width: 640px) {
       .dashboard {
-        grid-template-columns: repeat(5, 1fr);
+        grid-template-columns: repeat(6, 1fr);
       }
     }
 
     .metric-card {
       background: linear-gradient(135deg, #162444 0%, #111a31 100%);
       border: 1.5px solid #284473;
-      border-radius: 10px;
-      padding: 4px 6px;
+      border-radius: 9px;
+      padding: 3px 5px;
       display: flex;
       flex-direction: column;
       gap: 1px;
@@ -246,19 +246,19 @@
     }
 
     .body-tag {
-      font-size: 0.58rem;
-      padding: 1px 5px;
+      font-size: 0.55rem;
+      padding: 1px 4px;
       border-radius: 9999px;
       font-weight: 900;
       display: inline-block;
       width: fit-content;
-      line-height: 1.15;
+      line-height: 1.1;
     }
 
+    .tag-schema { background: rgba(168, 85, 247, 0.25); color: #c084fc; border: 1px solid rgba(192, 132, 252, 0.6); }
     .tag-balance { background: rgba(14, 165, 233, 0.25); color: #38bdf8; border: 1px solid rgba(56, 189, 248, 0.6); }
     .tag-flex { background: rgba(245, 158, 11, 0.25); color: #fbbf24; border: 1px solid rgba(251, 191, 36, 0.6); }
     .tag-spring { background: rgba(249, 115, 22, 0.25); color: #fb923c; border: 1px solid rgba(251, 146, 60, 0.6); }
-    .tag-schema { background: rgba(168, 85, 247, 0.25); color: #c084fc; border: 1px solid rgba(192, 132, 252, 0.6); }
 
     .comic-bubble {
       background: #ffffff;
@@ -356,22 +356,21 @@
     </div>
   </header>
 
-  <main class="w-full max-w-md flex-1 brawl-panel p-2.5 flex flex-col gap-1 min-h-0 relative z-10 overflow-hidden">
+  <main class="w-full max-w-md flex-1 brawl-panel p-2 flex flex-col gap-1 min-h-0 relative z-10 overflow-hidden">
     
     <!-- STEP 1: 動画選択（マイキャラが案内） -->
     <section id="view-step1" class="view-section active">
-      <!-- マイキャラ吹き出し案内 -->
       <div class="w-full flex items-center gap-2.5 bg-slate-950/70 p-2 rounded-xl border border-sky-500/30">
         <div class="w-12 h-12 flex-shrink-0 relative flex items-center justify-center">
           <img src="character.png" alt="マイキャラ" class="w-full h-full object-contain filter drop-shadow" onerror="this.src='https://placehold.co/100x100/1e293b/38bdf8?text=⚾';">
         </div>
         <div class="comic-bubble flex-1 text-[11px]">
-          きょうのピッチングや送球動画を選んでね！フォームの裏に隠れた<b>「身体の4大ブレーキ」</b>を暴くぜ！
+          ピッチングや送球動画を選んでね！フォームの裏に潜む<b>「身体の4大ブレーキ」</b>を暴くぜ！
         </div>
       </div>
 
       <div class="flex flex-col gap-2 w-full flex-1 justify-center">
-        <!-- 横向き撮影（推奨） -->
+        <!-- 横向き撮影（推奨・仕様書完全準拠） -->
         <label for="video-input-side" class="mode-card border-sky-500/80">
           <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-sky-400 to-blue-600 flex items-center justify-center text-2xl flex-shrink-0 shadow-md">
             ⚾
@@ -382,9 +381,9 @@
               <span class="text-[9px] bg-sky-900 text-sky-300 px-1.5 py-0.5 rounded font-black">基本推奨</span>
             </div>
             <span class="text-[10px] text-sky-200 font-bold leading-tight mt-0.5">
-              軸足バランス・前膝ブレーキ壁・体幹しなり・リリース高
+              ⓪軸足バランス・①捻転差・②前膝ブレーキ・③体幹前傾・④リリース高・🚶ステップ幅
             </span>
-            <span class="text-[9px] text-amber-300 mt-1 font-black">➔ ⚖️バランス・🦘瞬発力・🦴柔軟性を診断</span>
+            <span class="text-[9px] text-amber-300 mt-1 font-black">➔ 5大キネティックチェーンから身体の根本原因を特定</span>
           </div>
           <input type="file" id="video-input-side" accept="video/*" class="hidden">
         </label>
@@ -399,15 +398,14 @@
             <span class="text-[10px] text-emerald-200 font-bold leading-tight mt-0.5">
               ステップの左右ズレ（イン/アウト）・頭の目線ブレ
             </span>
-            <span class="text-[9px] text-purple-300 mt-1 font-black">➔ 🧠身体図式（脳内GPSのズレ）を診断</span>
+            <span class="text-[9px] text-purple-300 mt-1 font-black">➔ 🧠 身体図式（脳内空間GPSのズレ）を診断</span>
           </div>
           <input type="file" id="video-input-front" accept="video/*" class="hidden">
         </label>
       </div>
 
-      <!-- 身体4大テスト連携バナー -->
       <div class="w-full p-2 bg-slate-950/80 border border-sky-500/40 rounded-xl flex items-center justify-between text-[11px] text-sky-200 font-bold">
-        <span>💡 身体4大テストで直接測る？</span>
+        <span>💡 身体4大テストを直接測る？</span>
         <a href="body_tests.html" class="text-amber-400 font-black underline">身体ドックへ ➔</a>
       </div>
 
@@ -489,71 +487,80 @@
       </div>
     </section>
 
-    <!-- STEP 4: 5大指標ダッシュボード ＆ 動作解析画面 -->
+    <!-- STEP 4: 投球マスター仕様書完全準拠 5大エネルギー連鎖 ＆ ステップ幅ダッシュボード -->
     <section id="view-step4" class="view-section">
-      <!-- 5大指標メーターパネル（科学的根拠に基づく4大弱点直結） -->
       <div class="dashboard">
-        <!-- 0: 軸足バランス ➔ ⚖️ バランス能力（中殿筋・足裏支持力） -->
+        <!-- ⓪ 始点・土台: 軸足バランス ＆ 骨盤水平 ➔ 🧠 身体図式 ＆ ⚖️ 中殿筋支持力 -->
         <div class="metric-card" onclick="showTargetTestModal('balance')">
           <div class="flex items-center justify-between">
-            <span class="text-[10px] font-black text-sky-300 truncate" id="m0-title">⚖️ 軸足バランス</span>
-            <span class="body-tag tag-balance">⚖️ バランス</span>
+            <span class="text-[9px] font-black text-sky-300 truncate" id="m0-title">⓪ 軸足バランス</span>
+            <span class="body-tag tag-balance">⚖️ 支持力</span>
           </div>
-          <span class="text-sm font-black text-amber-400 leading-tight" id="m0-val">-- °</span>
-          <span class="text-[9px] text-slate-400 truncate" id="m0-sub">脚上げ時: --</span>
+          <span class="text-xs font-black text-amber-400 leading-tight" id="m0-val">-- °</span>
+          <span class="text-[8px] text-slate-400 truncate" id="m0-sub">脚上げ時: --</span>
         </div>
 
-        <!-- 1: 捻転差タメ ➔ 🦴 柔軟性（胸椎回旋モビリティ） -->
+        <!-- ① タメ・割れ: 踵接地時の捻転差 ➔ 🦴 胸椎回旋制限 ＆ 🧠 上下分離運動 -->
         <div class="metric-card" onclick="showTargetTestModal('flex')">
           <div class="flex items-center justify-between">
-            <span class="text-[10px] font-black text-sky-300 truncate" id="m1-title">🔄 捻転差 (タメ)</span>
-            <span class="body-tag tag-flex">🦴 柔軟性</span>
+            <span class="text-[9px] font-black text-sky-300 truncate" id="m1-title">① 捻転差 (タメ)</span>
+            <span class="body-tag tag-flex">🦴 胸椎回旋</span>
           </div>
-          <span class="text-sm font-black text-amber-400 leading-tight" id="m1-val">--</span>
-          <span class="text-[9px] text-slate-400 truncate" id="m1-sub">接地判定: --</span>
+          <span class="text-xs font-black text-amber-400 leading-tight" id="m1-val">--</span>
+          <span class="text-[8px] text-slate-400 truncate" id="m1-sub">接地判定: --</span>
         </div>
 
-        <!-- 2: 前膝ブレーキ壁 ➔ 🦘 瞬発力（地面反力・急停止バネ） -->
+        <!-- ② ブロック: 前膝の伸展ブレーキ量 ➔ 🦘 下半身急停止バネ（エキセントリック筋力） -->
         <div class="metric-card" onclick="showTargetTestModal('spring')">
           <div class="flex items-center justify-between">
-            <span class="text-[10px] font-black text-sky-300 truncate" id="m2-title">🦵 前膝ブレーキ壁</span>
-            <span class="body-tag tag-spring">🦘 瞬発力</span>
+            <span class="text-[9px] font-black text-sky-300 truncate" id="m2-title">② 前膝ブレーキ</span>
+            <span class="body-tag tag-spring">🦘 急停止バネ</span>
           </div>
-          <span class="text-sm font-black text-amber-400 leading-tight" id="m2-val">-- °</span>
-          <span class="text-[9px] text-slate-400 truncate" id="m2-sub">伸展変化: -- °</span>
+          <span class="text-xs font-black text-amber-400 leading-tight" id="m2-val">-- °</span>
+          <span class="text-[8px] text-slate-400 truncate" id="m2-sub">伸展変化: -- °</span>
         </div>
 
-        <!-- 3: 体幹前傾しなり ➔ 🦴 柔軟性（股関節ヒンジ・もも裏柔軟性） -->
-        <div class="metric-card" onclick="showTargetTestModal('flex')">
+        <!-- ③ 押し込み: 体幹前傾角度 ➔ 🦴 股関節ヒンジ制限（ハム・臀部の硬さ） -->
+        <div class="metric-card" onclick="showTargetTestModal('flex_hinge')">
           <div class="flex items-center justify-between">
-            <span class="text-[10px] font-black text-sky-300 truncate" id="m3-title">📐 体幹前傾 (しなり)</span>
-            <span class="body-tag tag-flex">🦴 柔軟性</span>
+            <span class="text-[9px] font-black text-sky-300 truncate" id="m3-title">③ 体幹前傾 (しなり)</span>
+            <span class="body-tag tag-flex">🦴 股関節</span>
           </div>
-          <span class="text-sm font-black text-amber-400 leading-tight" id="m3-val">-- °</span>
-          <span class="text-[9px] text-slate-400 truncate" id="m3-sub">放出時: -- °</span>
+          <span class="text-xs font-black text-amber-400 leading-tight" id="m3-val">-- °</span>
+          <span class="text-[8px] text-slate-400 truncate" id="m3-sub">放出時: -- °</span>
         </div>
 
-        <!-- 4: リリース高ブレ ＆ 踏み出しズレ ➔ 🧠 身体図式（脳内GPS・空間認知） -->
-        <div class="metric-card col-span-2 sm:col-span-1" onclick="showTargetTestModal('schema')">
+        <!-- ④ 放出・打点: リリース高 ＆ 安定性 ➔ 🦴 肩甲骨可動域 ＆ 🧠 空間内位置認識 -->
+        <div class="metric-card" onclick="showTargetTestModal('schema')">
           <div class="flex items-center justify-between">
-            <span class="text-[10px] font-black text-sky-300 truncate" id="m4-title">🎯 リリース高 / ズレ</span>
-            <span class="body-tag tag-schema">🧠 身体図式</span>
+            <span class="text-[9px] font-black text-sky-300 truncate" id="m4-title">④ リリース高</span>
+            <span class="body-tag tag-schema">🧠 空間認識</span>
           </div>
-          <span class="text-sm font-black text-amber-400 leading-tight" id="m4-val">-- cm</span>
-          <span class="text-[9px] text-slate-400 truncate" id="m4-sub">ステップ左右ズレ: -- cm</span>
+          <span class="text-xs font-black text-amber-400 leading-tight" id="m4-val">-- cm</span>
+          <span class="text-[8px] text-slate-400 truncate" id="m4-sub">打点安定度: --</span>
+        </div>
+
+        <!-- 🚶 推進・土台: ステップ幅 (歩幅率 %) ★完全復元 ➔ 🦘 推進力 ＆ 🦴 股関節柔軟性 -->
+        <div class="metric-card" onclick="showTargetTestModal('stride')">
+          <div class="flex items-center justify-between">
+            <span class="text-[9px] font-black text-sky-300 truncate" id="m5-title">🚶 ステップ幅</span>
+            <span class="body-tag tag-spring">🦘 推進力</span>
+          </div>
+          <span class="text-xs font-black text-amber-400 leading-tight" id="m5-val">-- cm</span>
+          <span class="text-[8px] text-slate-400 truncate" id="m5-sub">身長比: -- %</span>
         </div>
       </div>
 
       <!-- キャンバス画面 -->
       <div class="screen-wrapper" id="main-screen-wrapper">
         <canvas id="output-canvas"></canvas>
-        <div class="absolute top-1.5 left-1.5 bg-slate-950/80 px-2 py-0.5 rounded-full text-[10px] font-black text-sky-400 border border-sky-500/50" id="zoom-badge">
+        <div class="absolute top-1 left-1 bg-slate-950/80 px-2 py-0.5 rounded-full text-[9px] font-black text-sky-400 border border-sky-500/50" id="zoom-badge">
           🔍 1.0x (ピンチ可)
         </div>
-        <div class="absolute top-1.5 right-1.5 bg-sky-600 px-2 py-0.5 rounded-full text-[10px] font-black text-white border border-white" id="angle-mode-badge">
+        <div class="absolute top-1 right-1 bg-sky-600 px-2 py-0.5 rounded-full text-[9px] font-black text-white border border-white" id="angle-mode-badge">
           横向き解析 ⚾
         </div>
-        <div class="absolute bottom-1.5 left-1.5 bg-slate-950/80 px-2 py-0.5 rounded text-[10px] font-black text-amber-300 border border-amber-500/50" id="player-tag-badge">
+        <div class="absolute bottom-1 left-1 bg-slate-950/80 px-2 py-0.5 rounded text-[9px] font-black text-amber-300 border border-amber-500/50" id="player-tag-badge">
           👤 タイガ (140cm)
         </div>
         <div id="ai-loading" class="absolute inset-0 bg-slate-950/70 flex flex-col items-center justify-center gap-1.5" style="display: none;">
@@ -562,9 +569,9 @@
         </div>
       </div>
 
-      <!-- 操作ボタン & 再生バー -->
+      <!-- 操作ボタン & 再生シークバー -->
       <div class="w-full flex flex-col gap-1 z-10 flex-shrink-0">
-        <div class="w-full flex items-center gap-2 bg-slate-950 px-2 py-1 rounded-lg border border-slate-700">
+        <div class="w-full flex items-center gap-2 bg-slate-950 px-2.5 py-1 rounded-lg border border-slate-700">
           <input type="range" id="seek-bar" class="w-full h-2 accent-sky-500 cursor-pointer" value="0" min="0" max="100" step="0.001">
           <span id="time-disp" class="text-[10px] font-mono text-sky-400 font-black min-w-[55px] text-right">0.00 / 0.00</span>
         </div>
@@ -614,7 +621,7 @@
     </div>
   </div>
 
-  <!-- 💡 身体弱点ピンポイント処方モーダル -->
+  <!-- 💡 マスター仕様書完全準拠：身体弱点ピンポイント処方モーダル -->
   <div id="weakness-modal" class="modal-overlay" onclick="closeModalOnBackdrop(event, 'weakness-modal')">
     <div class="brawl-panel p-4 max-w-sm w-full bg-slate-900 border-amber-500 space-y-3">
       <div class="flex items-center gap-2 border-b border-slate-700 pb-2">
@@ -630,7 +637,7 @@
           <p id="weak-error-desc" class="text-amber-200 text-xs mt-0.5">--</p>
         </div>
         <div class="p-2.5 bg-sky-950/40 rounded-lg border border-sky-800/40">
-          <p class="font-bold text-emerald-400 text-[11px]">🎯 処方される身体テスト＆1分ドリル：</p>
+          <p class="font-bold text-emerald-400 text-[11px]">🎯 マスター仕様書処方テスト ＆ 1分ドリル：</p>
           <p id="weak-test-name" class="text-slate-200 font-black mt-0.5">--</p>
           <p id="weak-test-effect" class="text-[10px] text-slate-300 mt-1">--</p>
         </div>
@@ -674,8 +681,8 @@
 
     let playerName = "タイガ";
     let userHeightCm = 140;
-    let selectedArmSide = 'RIGHT'; // RIGHT or LEFT
-    let selectedAngleMode = 'SIDE'; // SIDE or FRONT
+    let selectedArmSide = 'RIGHT'; 
+    let selectedAngleMode = 'SIDE'; 
     let videoFileUrl = null;
     let isSkeletonVisible = true;
 
@@ -694,7 +701,7 @@
     let zoomScale = 1.0;
     let zoomPan = { x: 0, y: 0 };
 
-    // リアルタイム計算状態
+    // リアルタイム計算状態（マスター仕様書の5大キネティックチェーン＋ステップ幅）
     let currentState = {
       pivotBalanceDeg: 0,
       twistStatus: "◎ タメ十分 (下半身先行)",
@@ -704,10 +711,10 @@
       releaseHeightCm: 0,
       strideCm: 0,
       strideRatio: 0,
-      stepLateralDeviationCm: 0 // ステップの左右ズレ（身体図式判定用）
+      stepLateralDeviationCm: 0
     };
 
-    // 記録された最大/決定値
+    // 記録された決定・最大値
     let pitchingRecords = {
       topPivotBalanceDeg: null,
       twistStatus: null,
@@ -720,35 +727,49 @@
       stepLateralDeviationCm: 0
     };
 
-    // 身体4大弱点とテストの辞書（生体力学の因果関係に100%整合）
+    // マスター仕様書第5章・第7章に100%完全準拠した弱点処方マップ
     const WEAKNESS_MAP = {
       balance: {
         icon: "⚖️",
-        title: "バランス能力（土台・片足支持力）",
-        error: "一本足で立った瞬間に骨盤が水平を保てず崩れています。軸足のお尻（中殿筋）と足裏の土台が弱いため、体重移動がブレて手投げになります。",
-        testName: "⚓ 目隠し片足立ちテスト（15秒キープ）",
-        testEffect: "軸足の足裏アーチとお尻（中殿筋）を目覚めさせ、どんな球でも崩れない安定した回転軸を作ります。"
+        title: "バランス能力・支持力（中殿筋・足裏アーチ）",
+        error: "【⓪ 始点エラー】脚上げ時に骨盤が水平を保てず三塁側へ崩れ、軸足1本で自重を支えられていません。",
+        testName: "⚓ 目隠し片足立ちテスト（15秒キープ） ＆ チューブ中殿筋ウォーク",
+        testEffect: "軸足の足裏母指球とお尻（中殿筋）を目覚めさせ、グラつかない鉄壁の回転軸を作ります。"
       },
       flex: {
         icon: "🏹",
-        title: "柔軟性・関節可動域（胸椎回旋・股関節ヒンジ）",
-        error: "胸と腰が同時に回って手投げになっている、またはリリースで上体が起き上がってムチのようなしなりが使えていません。",
-        testName: "四つ這い胸椎回旋テスト ＆ 股関節ヒンジ前屈",
-        testEffect: "背骨（胸椎）と股関節のロックを解除し、低めに糸を引く伸びやかな剛速球を生み出します。"
+        title: "関節制限・胸椎柔軟性（背骨の回旋・上下分離）",
+        error: "【① タメ・割れエラー】胸と骨盤が同時に回って手投げになり、下半身先行の割れが作れていません。",
+        testName: "🏹 四つ這い胸椎回旋テスト ＆ 骨盤・胸郭セパレーション体操",
+        testEffect: "背骨（胸椎）のロックを解除し、下半身から上半身へムチのようにエネルギーを連鎖させます。"
+      },
+      flex_hinge: {
+        icon: "📐",
+        title: "関節制限・股関節ヒンジ（もも裏・臀部の硬さ）",
+        error: "【③ 押し込みエラー】リリースで上体が起き上がり棒立ちになっており、股関節の引き込みが使えていません。",
+        testName: "📐 股関節ヒンジ前屈テスト ＆ お尻・もも裏アクティブストレッチ",
+        testEffect: "前足の股関節を引き込んで胸を深く倒し込み、低めに糸を引く剛速球を生み出します。"
       },
       spring: {
         icon: "🦘",
-        title: "瞬発力・地面反力（前足急停止バネ）",
-        error: "着地した前膝が曲がったまま沈み、せっかく並進で溜めたエネルギーが地面に逃げてしまっています。",
-        testName: "💥 沈み込み垂直跳びテスト ＆ 前足ストップドリル",
-        testEffect: "前足1本でガツンと急ブレーキをかけて回転を最大加速させ、指先への初速を爆発させます。"
+        title: "瞬発力・地面反力（前足急停止バネ・エキセントリック筋力）",
+        error: "【② ブロックエラー】着地した前膝が曲がったまま沈み、並進のスピードを前足1本で急ブレーキできていません。",
+        testName: "💥 沈み込み垂直跳びテスト ＆ 前足ストップ・片足ジャンプ",
+        testEffect: "前足でガツンと急停止して地面反力を100%回転に変換し、ボール初速を爆発させます。"
       },
       schema: {
         icon: "🧠",
-        title: "身体図式・ボディイメージ（脳内空間GPS）",
-        error: "リリース位置が毎球バラついている、またはステップの着地が左右（イン/アウト）に狂い、狙った空間座標から外れています。",
-        testName: "👣 目隠し足踏みズレテスト",
+        title: "身体図式・空間認識（脳内GPS・指先位置認知）",
+        error: "【④ 放出・打点エラー】リリースポイントが低く毎球バラつく、またはステップが左右に狂っています。",
+        testName: "👣 目隠し足踏みズレテスト ＆ 背中・肩甲骨はがしテスト",
         testEffect: "脳内の重心感覚と空間認識をリセットし、思い通りのリリース高と針の穴を通す制球力を手に入れます。"
+      },
+      stride: {
+        icon: "🚶",
+        title: "並進推進力・股関節柔軟性（下半身の並進エネルギー）",
+        error: "【土台エラー】ステップ幅が狭く、並進運動の勢いをボールに伝え切れていません。",
+        testName: "🦘 立ち幅跳び・並進推進力テスト ＆ 股関節モビリティ体操",
+        testEffect: "軸足で前へ鋭くスライドし、身長比80%以上の力強いストライドを獲得します。"
       }
     };
 
@@ -922,7 +943,7 @@
       const centerX = b.x + tuneRuler.centerXNorm * b.w;
       const barWidth = 55;
 
-      // 中心縦ライン
+      // 中心ライン
       scanCtx.strokeStyle = "rgba(56, 189, 248, 0.45)";
       scanCtx.lineWidth = 3.5;
       scanCtx.beginPath();
@@ -930,7 +951,7 @@
       scanCtx.lineTo(centerX, bottomY);
       scanCtx.stroke();
 
-      // 頭バー（青）
+      // 頭バー
       scanCtx.strokeStyle = "#38bdf8";
       scanCtx.lineWidth = 4;
       scanCtx.beginPath();
@@ -951,7 +972,7 @@
       scanCtx.textAlign = "center";
       scanCtx.fillText("👑 あたま ↕", centerX, topY - 14);
 
-      // 地面バー（赤）
+      // 足元地面バー
       scanCtx.strokeStyle = "#f43f5e";
       scanCtx.lineWidth = 4;
       scanCtx.beginPath();
@@ -1072,7 +1093,7 @@
             tuneRuler.centerXNorm = NOSE.x;
 
             document.getElementById('btn-scan-next-step').style.display = 'block';
-            document.getElementById('scan-guide-text').innerHTML = "🎯 <b>スキャン成功！</b> 丸ハンドルで微調整して次へ進もう！";
+            document.getElementById('scan-guide-text').innerHTML = "🎯 <b>スキャン成功！</b> ハンドルで合わせて次へ進もう！";
             renderScanFrame();
             showToast("✅ 全身を検知しました！");
           }
@@ -1100,21 +1121,22 @@
         const activePxPerCm = (normH * b.h) / userHeightCm;
 
         const L_SHOULDER = l[11], R_SHOULDER = l[12];
-        const L_ELBOW = l[13], R_ELBOW = l[14];
         const L_WRIST = l[15], R_WRIST = l[16];
         const L_HIP = l[23], R_HIP = l[24];
         const L_KNEE = l[25], R_KNEE = l[26];
         const L_ANKLE = l[27], R_ANKLE = l[28];
+        const L_HEEL = l[29] || l[27], R_HEEL = l[30] || l[28];
 
         const throwWrist = isRightPitcher ? R_WRIST : L_WRIST;
         const frontKnee = isRightPitcher ? L_KNEE : R_KNEE;
         const frontHip = isRightPitcher ? L_HIP : R_HIP;
         const frontAnkle = isRightPitcher ? L_ANKLE : R_ANKLE;
-        const pivotAnkle = isRightPitcher ? R_ANKLE : L_ANKLE;
+        const frontHeel = isRightPitcher ? L_HEEL : R_HEEL;
+        const pivotHeel = isRightPitcher ? R_HEEL : L_HEEL;
 
         if (isSkeletonVisible) drawPitchingSkeleton(l, b.x, b.y, b.w, b.h, isRightPitcher);
 
-        // ⓪ 軸足バランス（脚上げ時の骨盤傾斜角）➔ ⚖️ バランス能力
+        // ⓪ 軸足バランス ＆ 骨盤水平（脚上げ時）➔ 🧠 身体図式 ＆ ⚖️ 中殿筋支持力
         if (L_HIP && R_HIP) {
           const hipDx = (L_HIP.x - R_HIP.x) * b.w;
           const hipDy = (L_HIP.y - R_HIP.y) * b.h;
@@ -1123,7 +1145,7 @@
           document.getElementById('m0-val').textContent = `${tiltAngle} °`;
         }
 
-        // ① 捻転差（胸と腰の角度差）➔ 🦴 柔軟性（胸椎回旋）
+        // ① 踵接地時の捻転差（下半身先行）➔ 🦴 胸椎回旋制限 ＆ 🧠 上下分離運動
         if (L_SHOULDER && R_SHOULDER && L_HIP && R_HIP) {
           const sDx = (L_SHOULDER.x - R_SHOULDER.x), sDz = ((L_SHOULDER.z || 0) - (R_SHOULDER.z || 0));
           const hDx = (L_HIP.x - R_HIP.x), hDz = ((L_HIP.z || 0) - (R_HIP.z || 0));
@@ -1139,7 +1161,7 @@
           document.getElementById('m1-val').textContent = twistLabel.split(' ')[0];
         }
 
-        // ② 前膝ブレーキ壁（前足の急停止伸展変化量）➔ 🦘 瞬発力（地面反力）
+        // ② 前膝の伸展ブレーキ量（急ブレーキ）➔ 🦘 下半身急停止バネ（エキセントリック筋力）
         if (frontHip && frontKnee && frontAnkle) {
           const rawAngle = calcJointAngle3D(frontHip, frontKnee, frontAnkle);
           if (Number.isFinite(rawAngle) && rawAngle >= 50 && rawAngle <= 180) {
@@ -1148,7 +1170,7 @@
           }
         }
 
-        // ③ 体幹前傾（リリース時の上体前傾角度）➔ 🦴 柔軟性（股関節ヒンジ・もも裏）
+        // ③ 体幹前傾角度（ムチのしなり）➔ 🦴 股関節ヒンジ制限（ハム・臀部の硬さ）
         if (L_SHOULDER && R_SHOULDER && L_HIP && R_HIP) {
           const midS = { x: (L_SHOULDER.x + R_SHOULDER.x)/2, y: (L_SHOULDER.y + R_SHOULDER.y)/2 };
           const midH = { x: (L_HIP.x + R_HIP.x)/2, y: (L_HIP.y + R_HIP.y)/2 };
@@ -1159,30 +1181,37 @@
           }
         }
 
-        // ④ リリース打点高 ＆ ステップ踏み出し左右ズレ ➔ 🧠 身体図式（脳内空間GPS）
-        if (throwWrist && frontAnkle && pivotAnkle) {
-          const groundY = Math.max(frontAnkle.y, pivotAnkle.y) * b.h;
+        // ④ リリースポイントの高さ ＆ 安定性 ➔ 🦴 肩甲骨可動域 ＆ 🧠 空間内位置認識
+        if (throwWrist && frontHeel && pivotHeel) {
+          const groundY = Math.max(frontHeel.y, pivotHeel.y) * b.h;
           const rHeightCm = Math.round(Math.max(0, groundY - throwWrist.y * b.h) / activePxPerCm);
           currentState.releaseHeightCm = rHeightCm;
           document.getElementById('m4-val').textContent = `${rHeightCm} cm`;
+        }
 
-          // 正面・横向きに応じた空間ズレ算出
-          const stepDxPx = Math.abs((frontAnkle.x - pivotAnkle.x) * b.w);
-          const lateralDeviationCm = Math.round(stepDxPx / activePxPerCm);
-          currentState.stepLateralDeviationCm = lateralDeviationCm;
-
-          const stepPx = Math.hypot((frontAnkle.x - pivotAnkle.x) * b.w, (frontAnkle.y - pivotAnkle.y) * b.h);
+        // 🚶 ステップ幅 (歩幅 cm / 身長比 %) ★独立復元 ➔ 🦘 推進力 ＆ 🦴 股関節柔軟性
+        if (frontHeel && pivotHeel) {
+          const stepDxPx = Math.abs((frontHeel.x - pivotHeel.x) * b.w);
+          const stepDyPx = Math.abs((frontHeel.y - pivotHeel.y) * b.h);
+          const stepPx = Math.hypot(stepDxPx, stepDyPx);
           const stepCm = Math.round(stepPx / activePxPerCm);
           const stepPct = Math.round((stepCm / userHeightCm) * 100);
-          currentState.strideCm = stepCm;
-          currentState.strideRatio = stepPct;
 
-          if (stepCm > pitchingRecords.maxStrideCm && stepCm <= userHeightCm * 1.25) {
-            pitchingRecords.maxStrideCm = stepCm;
-            pitchingRecords.maxStrideRatio = stepPct;
+          if (stepCm >= 10 && stepCm <= userHeightCm * 1.3) {
+            currentState.strideCm = stepCm;
+            currentState.strideRatio = stepPct;
+            document.getElementById('m5-val').textContent = `${stepCm} cm`;
+            document.getElementById('m5-sub').textContent = `身長比: ${stepPct} %`;
+
+            if (stepCm > pitchingRecords.maxStrideCm) {
+              pitchingRecords.maxStrideCm = stepCm;
+              pitchingRecords.maxStrideRatio = stepPct;
+            }
           }
 
-          document.getElementById('m4-sub').textContent = `ステップズレ: ${lateralDeviationCm}cm (${stepPct}%)`;
+          // 正面用左右ズレ
+          const lateralDevCm = Math.round(stepDxPx / activePxPerCm);
+          currentState.stepLateralDeviationCm = lateralDevCm;
         }
       }
       outputCtx.restore();
@@ -1218,102 +1247,93 @@
       });
     }
 
-    // 投球5大指標 × 身体4大弱点「完全対照マトリクス」診断エンジン
+    // マスター仕様書第5章・第7章完全準拠のAI診断ロジック
     function generatePitchingCoachAdvice(rec) {
       const m = rec.metrics;
       let praises = [];
       let issues = [];
 
-      // 1. 前膝ブレーキ壁（🦘 瞬発力・地面反力）の評価
+      // ② 前膝ブレーキ量（急停止バネ）
       const kneeBrake = m.kneeBrake !== undefined && m.kneeBrake !== null ? m.kneeBrake : 10;
       if (kneeBrake >= 14) {
         praises.push(`前膝の急ブレーキ【+${kneeBrake}°】で地面反力を100%ボールに伝達！`);
       } else {
-        const severity = (14 - kneeBrake) * 2.3;
         issues.push({
           key: 'spring',
-          severity: severity,
-          text: `着地した前膝が曲がって沈んでいます。ガツンと突っ張って急停止させよう！(🦘 瞬発力・地面反力)`
+          severity: (14 - kneeBrake) * 2.3,
+          text: `前膝が曲がったまま沈み、地面反力を逃しています。ガツンと突っ張って急停止させよう！(🦘 下半身急停止バネ)`
         });
       }
 
-      // 2. 軸足バランス（⚖️ バランス能力・骨盤水平支持力）の評価
+      // ⓪ 軸足バランス（中殿筋支持力・身体図式）
       const pivotBalance = m.pivotBalance !== undefined && m.pivotBalance !== null ? m.pivotBalance : 10;
       if (pivotBalance <= 8) {
-        praises.push(`脚上げ時の軸足バランス【傾き ${pivotBalance}°】でブレない土台！`);
+        praises.push(`脚上げ時の軸足バランス【骨盤傾き ${pivotBalance}°】でブレない土台！`);
       } else {
-        const severity = (pivotBalance - 8) * 2.2;
         issues.push({
           key: 'balance',
-          severity: severity,
-          text: `一本足で立った瞬間に骨盤が三塁側へ崩れています。水平をキープしよう！(⚖️ 軸足バランス支持力)`
+          severity: (pivotBalance - 8) * 2.2,
+          text: `脚上げ時に骨盤が三塁側へ崩れています。水平をキープしよう！(⚖️ 軸足支持力・身体図式)`
         });
       }
 
-      // 3. 体幹前傾 ＆ 捻転差（🦴 柔軟性・胸椎回旋・股関節ヒンジ）の評価
+      // ① 捻転差 ＆ ③ 体幹前傾（胸椎回旋・股関節ヒンジ）
       const trunkTilt = m.trunkTilt !== undefined && m.trunkTilt !== null ? m.trunkTilt : 20;
       const twistLabel = m.twistStatus || "";
-      let flexIssueScore = 0;
-      let flexText = "";
-
       if (trunkTilt >= 28 && trunkTilt <= 45) {
         praises.push(`リリース時の前傾【${trunkTilt}°】で低めに糸を引く球筋！`);
       } else if (trunkTilt < 25) {
-        flexIssueScore += (25 - trunkTilt) * 2.0;
-        flexText = `上体が起きて棒立ち気味です。前足の股関節を引き込んで胸を押し出そう！(🦴 股関節・胸椎柔軟性)`;
+        issues.push({
+          key: 'flex_hinge',
+          severity: (25 - trunkTilt) * 2.0,
+          text: `上体が起き上がり棒立ちです。股関節を引き込んで胸を倒し込もう！(🦴 股関節ヒンジ制限)`
+        });
       }
 
       if (twistLabel.includes("手投げ") || twistLabel.includes("開き早い")) {
-        flexIssueScore += 20;
-        flexText = flexText || `胸と腰が同時に回って手投げになっています。下半身先行のタメを作ろう！(🦴 胸椎回旋柔軟性)`;
+        issues.push({
+          key: 'flex',
+          severity: 20,
+          text: `胸と骨盤が同時に回り手投げになっています。下半身先行のタメを作ろう！(🦴 胸椎回旋制限)`
+        });
       } else if (twistLabel.includes("タメ十分")) {
         praises.push(`下半身先行のタメ（捻転差）が綺麗に作れています！`);
       }
 
-      if (flexIssueScore > 0) {
+      // 🚶 ステップ幅（歩幅率 %）の評価
+      const strideRatio = m.strideRatio || 0;
+      if (strideRatio >= 75 && strideRatio <= 90) {
+        praises.push(`ステップ幅が身長の【${strideRatio}%】で理想の黄金ストライド！`);
+      } else if (strideRatio > 0 && strideRatio < 70) {
         issues.push({
-          key: 'flex',
-          severity: flexIssueScore,
-          text: flexText
+          key: 'stride',
+          severity: (70 - strideRatio) * 1.5,
+          text: `ステップ幅が身長の【${strideRatio}%】と狭いです。軸足で前へ強く推進しよう！(🦘 推進力)`
         });
       }
 
-      // 4. リリース高バラつき ＆ ステップ踏み出し左右ズレ（🧠 身体図式・空間認識）の評価
-      const lateralDev = m.stepLateralDeviationCm !== undefined ? m.stepLateralDeviationCm : 0;
+      // ④ リリース高 ＆ 空間安定性
       const releaseH = m.releaseH || 130;
-      let schemaIssueScore = 0;
-      let schemaText = "";
-
-      if (selectedAngleMode === 'FRONT' && lateralDev > 12) {
-        schemaIssueScore += (lateralDev - 12) * 2.0;
-        schemaText = `ステップの踏み出しが【左右に ${lateralDev}cm】狂っています。まっすぐ着地する脳内GPSを整えよう！(🧠 身体図式)`;
-      } else if (releaseH < 90) {
-        schemaIssueScore += 18;
-        schemaText = `リリースポイントが低く安定していません。空間内の指先位置を整えよう！(🧠 身体図式)`;
-      } else {
-        praises.push(`空間内のリリースポイントと手足の位置感覚がバッチリ！`);
-      }
-
-      if (schemaIssueScore > 0) {
+      if (releaseH < 90) {
         issues.push({
           key: 'schema',
-          severity: schemaIssueScore,
-          text: schemaText
+          severity: 18,
+          text: `リリース位置が低く肘が下がっています。肩甲骨を立て空間座標を整えよう！(🧠 身体図式・肩甲骨)`
         });
+      } else {
+        praises.push(`空間内のリリースポイントと手足の位置感覚が良好！`);
       }
 
-      // 深刻度順にソートし、最も根本的な弱点を確定
-      let primaryWeakness = 'balance';
+      // 深刻度順にソートして根本弱点を決定
+      let primaryWeakness = 'spring';
       if (issues.length > 0) {
         issues.sort((a, b) => b.severity - a.severity);
         primaryWeakness = issues[0].key;
-      } else {
-        primaryWeakness = 'spring';
       }
 
       const adviceImprovements = issues.length > 0
         ? issues.slice(0, 2).map(i => "・" + i.text).join("\n")
-        : "・現在の素晴らしいフォームバランスをキープしよう！";
+        : "・現在の素晴らしいキネティック連鎖をキープしよう！";
 
       return {
         text: "【🤖 投球AI診断】\n🌟 ナイス:\n" +
@@ -1366,7 +1386,7 @@
       all.unshift(entry);
       localStorage.setItem(STORAGE_KEY, JSON.stringify(all));
 
-      // トップ画面の身体4大エンジンへ弱点フラグを同期（黄色く点滅させる）
+      // トップ画面の身体エンジンへ弱点を同期
       updateBodyEngineAlert(diagnosis.weaknessKey);
 
       showToast(`✅ ${playerName}選手の投球カルテを保存しました！\n（身体弱点：${WEAKNESS_MAP[diagnosis.weaknessKey].title.split('（')[0]}）`);
@@ -1375,11 +1395,14 @@
 
     function updateBodyEngineAlert(weaknessKey) {
       try {
+        let mappedKey = weaknessKey;
+        if (weaknessKey === 'flex_hinge') mappedKey = 'flex';
+        if (weaknessKey === 'stride') mappedKey = 'spring';
+
         let engine = JSON.parse(localStorage.getItem('baseball_body_engine_v1') || '{}');
-        // 全てのアラートをリセット後、検知された弱点のみ点滅アラート設定
         Object.keys(engine).forEach(k => { if(engine[k]) engine[k].alert = false; });
-        if (!engine[weaknessKey]) engine[weaknessKey] = {};
-        engine[weaknessKey].alert = true;
+        if (!engine[mappedKey]) engine[mappedKey] = {};
+        engine[mappedKey].alert = true;
         localStorage.setItem('baseball_body_engine_v1', JSON.stringify(engine));
       } catch(e) {}
     }
@@ -1405,8 +1428,8 @@
       const isRight = (selectedArmSide === 'RIGHT');
       document.getElementById('player-tag-badge').textContent = `👤 ${playerName} (${userHeightCm}cm)`;
       document.getElementById('angle-mode-badge').textContent = selectedAngleMode === 'SIDE' ? "横向き解析 ⚾" : "正面解析 🎯";
-      document.getElementById('m0-title').textContent = isRight ? "⚖️ 軸足バランス (右)" : "⚖️ 軸足バランス (左)";
-      document.getElementById('m2-title').textContent = isRight ? "🦵 前膝ブレーキ (左壁)" : "🦵 前膝ブレーキ (右壁)";
+      document.getElementById('m0-title').textContent = isRight ? "⓪ 軸足(右)バランス" : "⓪ 軸足(左)バランス";
+      document.getElementById('m2-title').textContent = isRight ? "② 前膝(左)ブレーキ" : "② 前膝(右)ブレーキ";
     }
 
     function populatePastPlayers() {
@@ -1452,8 +1475,8 @@
         const m = r.metrics;
         const diag = generatePitchingCoachAdvice(r);
         const adviceHtml = diag.text.replace(/\n/g, '<br>');
-        const weakKey = r.primaryWeakness || diag.weaknessKey || 'balance';
-        const weakInfo = WEAKNESS_MAP[weakKey];
+        const weakKey = r.primaryWeakness || diag.weaknessKey || 'spring';
+        const weakInfo = WEAKNESS_MAP[weakKey] || WEAKNESS_MAP.spring;
 
         list.innerHTML += `
           <div class="bg-slate-950 p-2.5 rounded-xl border border-sky-500/30 space-y-1.5">
@@ -1462,14 +1485,15 @@
               <span class="text-[10px] text-slate-400">${r.armSide === 'RIGHT' ? '右投げ' : '左投げ'}</span>
             </div>
             
-            <div class="text-[11px] text-slate-300 grid grid-cols-2 gap-1 py-0.5">
-              <span>前膝ブレーキ: <b>${m.kneeBrake !== undefined && m.kneeBrake !== null ? '+' + m.kneeBrake + '°' : '--'}</b></span>
+            <div class="text-[10px] text-slate-300 grid grid-cols-3 gap-1 py-0.5 bg-slate-900/60 p-1.5 rounded-lg border border-slate-800">
+              <span>軸足: <b>${m.pivotBalance !== undefined ? m.pivotBalance + '°' : '--'}</b></span>
+              <span>捻転: <b>${m.twistStatus ? m.twistStatus.split(' ')[0] : '--'}</b></span>
+              <span>ブレーキ: <b>${m.kneeBrake !== undefined ? '+' + m.kneeBrake + '°' : '--'}</b></span>
               <span>体幹前傾: <b>${m.trunkTilt || '--'}°</b></span>
-              <span>軸足バランス: <b>${m.pivotBalance || '--'}°</b></span>
-              <span>リリース高: <b>${m.releaseH || '--'}cm</b></span>
+              <span>打点高: <b>${m.releaseH || '--'}cm</b></span>
+              <span>歩幅: <b>${m.stride || '--'}cm (${m.strideRatio || 0}%)</b></span>
             </div>
 
-            <!-- 身体4大弱点アンロック誘導ボックス -->
             <div class="p-2 rounded-lg bg-amber-950/40 border border-amber-500/40 flex items-center justify-between">
               <div>
                 <span class="text-[9px] text-amber-300 font-bold block">🚨 この投球から暴かれた根本弱点：</span>
@@ -1496,8 +1520,8 @@
       const r = getSavedPitchingRecords()[idx];
       if (!r) return;
       const diag = generatePitchingCoachAdvice(r);
-      const weak = WEAKNESS_MAP[r.primaryWeakness || diag.weaknessKey];
-      const text = `⚾ 【投球バイオメカニクス 弱点レポート】\n👤 選手: ${r.playerName} (${r.armSide === 'RIGHT' ? '右投' : '左投'})\n📅 測定日: ${r.date}\n前膝ブレーキ: ${r.metrics.kneeBrake}°\n体幹前傾: ${r.metrics.trunkTilt}°\n軸足バランス: ${r.metrics.pivotBalance}°\n\n🚨 暴かれた身体の弱点: ${weak.title}\n➔ ${weak.testName}\n\n` + diag.text;
+      const weak = WEAKNESS_MAP[r.primaryWeakness || diag.weaknessKey] || WEAKNESS_MAP.spring;
+      const text = `⚾ 【投球バイオメカニクス 弱点レポート】\n👤 選手: ${r.playerName} (${r.armSide === 'RIGHT' ? '右投' : '左投'})\n📅 測定日: ${r.date}\n⓪軸足バランス: ${r.metrics.pivotBalance}°\n①捻転差: ${r.metrics.twistStatus}\n②前膝ブレーキ: +${r.metrics.kneeBrake}°\n③体幹前傾: ${r.metrics.trunkTilt}°\n④リリース高: ${r.metrics.releaseH}cm\n🚶ステップ幅: ${r.metrics.stride}cm (${r.metrics.strideRatio}%身)\n\n🚨 暴かれた身体の根本弱点: ${weak.title}\n➔ ${weak.testName}\n\n` + diag.text;
       
       if (navigator.share) {
         navigator.share({ title: `${r.playerName}選手の投球レポート`, text }).catch(() => {});
@@ -1518,7 +1542,7 @@
 
       updateCardLabels();
 
-      // スキャン定規ドラッグイベント（ポインター・タッチ対応）
+      // スキャン定規ドラッグ
       scanCanvas.addEventListener('mousedown', onScanPointerDown);
       window.addEventListener('mousemove', onScanPointerMove);
       window.addEventListener('mouseup', onScanPointerUp);
@@ -1603,7 +1627,7 @@
         }, 150);
       });
 
-      // 測定画面のシークバー操作（動画の自由な前後操作）
+      // 測定シークバー
       const mainSeekBar = document.getElementById('seek-bar');
       mainSeekBar.addEventListener('input', (e) => {
         if (!Number.isFinite(videoElement.duration) || videoElement.duration === 0) return;
@@ -1680,8 +1704,9 @@
         pitchingRecords.kneeBrakeDeg = Math.max(0, 180 - currentKnee);
         document.getElementById('m2-sub').textContent = `ブレーキ決定: +${pitchingRecords.kneeBrakeDeg}°`;
         document.getElementById('m3-sub').textContent = `放出時: ${currentState.trunkTiltDeg}°`;
+        document.getElementById('m4-sub').textContent = `放出打点: ${currentState.releaseHeightCm}cm`;
         playTone(880, 0.12, 'triangle');
-        showToast(`💥 放出の瞬間（前膝ブレーキ壁 +${pitchingRecords.kneeBrakeDeg}° / 体幹前傾 ${currentState.trunkTiltDeg}°）を記録！`);
+        showToast(`💥 放出の瞬間（前膝ブレーキ +${pitchingRecords.kneeBrakeDeg}° / 体幹前傾 ${currentState.trunkTiltDeg}°）を記録！`);
       });
 
       // 保存・モーダル操作
