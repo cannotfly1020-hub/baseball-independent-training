@@ -3,470 +3,633 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-  <title>ジュニア野球 自走式PDCA | BRAWL BASEBALL</title>
-  <!-- Tailwind CSS CDN -->
+  <title>ジュニア野球自走式PDCA - トップロビー</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <!-- Google Fonts: M PLUS Rounded 1c & Inter -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@700;800;900&family=Inter:wght@700;900&display=swap" rel="stylesheet">
-
   <style>
+    @import url('https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@700;800;900&display=swap');
+
     :root {
-      --primary-green: #10b981;
-      --primary-green-dark: #059669;
-      --accent-yellow: #fbbf24;
-      --accent-orange: #f97316;
-      --accent-blue: #0ea5e9;
-      --accent-blue-dark: #0284c7;
-      --bg-dark: #0f172a;
+      --font-game: "M PLUS Rounded 1c", "Hiragino Maru Gothic ProN", sans-serif;
+      --bg-dark: #0a0f1d;
+      --card-dark: #131c31;
+      --card-border: #223254;
+      --gold-primary: #f59e0b;
+      --gold-shadow: #b45309;
+      --cyan-primary: #06b6d4;
+      --cyan-shadow: #0e7490;
+      --emerald-primary: #10b981;
+      --emerald-shadow: #047857;
+      --rose-primary: #f43f5e;
+      --rose-shadow: #be123c;
     }
 
     * {
       box-sizing: border-box;
+      margin: 0;
+      padding: 0;
       user-select: none;
       -webkit-user-select: none;
-      -webkit-touch-callout: none;
+      -webkit-tap-highlight-color: transparent;
     }
 
     body {
-      font-family: "M PLUS Rounded 1c", "Hiragino Maru Gothic ProN", sans-serif;
+      font-family: var(--font-game);
       background-color: var(--bg-dark);
-      background-image: 
-        radial-gradient(circle at 50% 20%, rgba(14, 165, 233, 0.22) 0%, transparent 65%),
-        radial-gradient(circle at 50% 80%, rgba(16, 185, 129, 0.22) 0%, transparent 65%),
-        repeating-linear-gradient(45deg, rgba(255, 255, 255, 0.015) 0, rgba(255, 255, 255, 0.015) 12px, transparent 0, transparent 24px);
+      color: #ffffff;
       height: 100dvh;
       max-height: 100dvh;
       overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: space-between;
+      padding: env(safe-area-inset-top, 6px) 10px calc(env(safe-area-inset-bottom, 6px) + 6px) 10px;
+      position: relative;
     }
 
-    /* 3D立体ボタンスタイル */
-    .btn-3d-brawl {
-      box-shadow: 0 4px 0 #047857, 0 6px 14px rgba(0, 0, 0, 0.45);
-      transition: transform 0.08s ease, box-shadow 0.08s ease;
-    }
-    .btn-3d-brawl:active {
-      transform: translateY(3px);
-      box-shadow: 0 1px 0 #047857, 0 2px 6px rgba(0, 0, 0, 0.3);
+    .brawl-bg-pattern {
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at 50% 35%, #1c2c4c 0%, #0c1424 75%, #050811 100%);
+      z-index: -2;
+      overflow: hidden;
     }
 
-    .btn-3d-pitch {
-      box-shadow: 0 4px 0 #0369a1, 0 6px 14px rgba(0, 0, 0, 0.45);
-      transition: transform 0.08s ease, box-shadow 0.08s ease;
-    }
-    .btn-3d-pitch:active {
-      transform: translateY(3px);
-      box-shadow: 0 1px 0 #0369a1, 0 2px 6px rgba(0, 0, 0, 0.3);
-    }
-
-    .btn-3d-sub {
-      box-shadow: 0 3px 0 #334155;
-      transition: transform 0.08s ease, box-shadow 0.08s ease;
-    }
-    .btn-3d-sub:active {
-      transform: translateY(2px);
-      box-shadow: 0 1px 0 #334155;
-    }
-
-    /* アバターの自然な呼吸（アイドル）アニメーション */
-    @keyframes avatar-breathe {
-      0%, 100% {
-        transform: translateY(0) scale(1);
-      }
-      50% {
-        transform: translateY(-4px) scale(1.02, 0.99);
-      }
+    .sunburst {
+      position: absolute;
+      top: 32%;
+      left: 50%;
+      width: 520px;
+      height: 520px;
+      transform: translate(-50%, -50%);
+      background: repeating-conic-gradient(
+        rgba(56, 189, 248, 0.05) 0deg 15deg,
+        transparent 15deg 30deg
+      );
+      border-radius: 50%;
+      pointer-events: none;
+      animation: spinRays 40s linear infinite;
+      z-index: -1;
     }
 
-    /* タップ時の豪快なフルスイングモーション */
-    @keyframes full-swing {
+    @keyframes spinRays {
+      from { transform: translate(-50%, -50%) rotate(0deg); }
+      to { transform: translate(-50%, -50%) rotate(360deg); }
+    }
+
+    .brawl-panel {
+      background: rgba(19, 28, 49, 0.92);
+      border: 2px solid var(--card-border);
+      box-shadow: 0 4px 0 #080d1a, inset 0 1px 0 rgba(255, 255, 255, 0.15);
+      border-radius: 14px;
+    }
+
+    .btn-3d {
+      position: relative;
+      transition: transform 0.08s ease, filter 0.08s ease;
+      font-family: var(--font-game);
+      font-weight: 900;
+      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.6);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+    }
+
+    .btn-3d:active {
+      transform: translateY(3px) scale(0.985);
+    }
+
+    .btn-battle-batting {
+      background: linear-gradient(180deg, #34d399 0%, #10b981 50%, #059669 100%);
+      border: 2px solid #fef08a;
+      box-shadow: 0 5px 0 #064e3b, 0 8px 12px rgba(16, 185, 129, 0.35);
+    }
+
+    .btn-battle-batting:active {
+      box-shadow: 0 2px 0 #064e3b, 0 3px 6px rgba(16, 185, 129, 0.25);
+    }
+
+    .btn-battle-pitching {
+      background: linear-gradient(180deg, #38bdf8 0%, #0284c7 50%, #0369a1 100%);
+      border: 2px solid #ffffff;
+      box-shadow: 0 5px 0 #0c4a6e, 0 8px 12px rgba(2, 132, 199, 0.35);
+    }
+
+    .btn-battle-pitching:active {
+      box-shadow: 0 2px 0 #0c4a6e, 0 3px 6px rgba(2, 132, 199, 0.25);
+    }
+
+    .avatar-stage {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      height: 100%;
+      cursor: pointer;
+    }
+
+    .character-container {
+      position: relative;
+      width: 180px;
+      height: 180px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      animation: idleBreathe 3s ease-in-out infinite;
+      transform-origin: bottom center;
+    }
+
+    @keyframes idleBreathe {
+      0%, 100% { transform: translateY(0px) scale(1, 1); }
+      50% { transform: translateY(-5px) scale(1.02, 0.98); }
+    }
+
+    .character-container.swinging {
+      animation: batStepImpact 0.38s cubic-bezier(0.1, 0.9, 0.2, 1) forwards !important;
+    }
+
+    @keyframes batStepImpact {
+      0% { transform: translateY(0) scale(1); }
+      20% { transform: translateX(-8px) translateY(2px) scale(0.96); } /* タメ */
+      50% { transform: translateX(12px) translateY(-3px) scale(1.06); } /* 前足踏み込み＆スイング */
+      100% { transform: translateX(0) translateY(0) scale(1); }
+    }
+
+    .char-image {
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
+      filter: drop-shadow(0 8px 16px rgba(0, 0, 0, 0.6)) drop-shadow(0 0 10px rgba(56, 189, 248, 0.4));
+      pointer-events: none;
+    }
+
+    /* 目がキラーンと光るスパーク演出 */
+    .eye-flare {
+      position: absolute;
+      width: 22px;
+      height: 22px;
+      background: radial-gradient(circle, #ffffff 15%, #38bdf8 55%, transparent 75%);
+      border-radius: 50%;
+      opacity: 0;
+      pointer-events: none;
+      z-index: 25;
+      mix-blend-mode: screen;
+    }
+
+    .eye-flare::after {
+      content: "";
+      position: absolute;
+      top: 50%;
+      left: -50%;
+      width: 200%;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, #ffffff, transparent);
+      transform: translateY(-50%);
+    }
+
+    .eye-flare::before {
+      content: "";
+      position: absolute;
+      top: -50%;
+      left: 50%;
+      width: 2px;
+      height: 200%;
+      background: linear-gradient(180deg, transparent, #ffffff, transparent);
+      transform: translateX(-50%);
+    }
+
+    .eye-left {
+      top: 36%;
+      left: 41%;
+    }
+
+    .eye-right {
+      top: 36%;
+      left: 56%;
+    }
+
+    .eye-flare.flash {
+      animation: eyeGleam 0.4s ease-out forwards;
+    }
+
+    @keyframes eyeGleam {
+      0% { opacity: 0; transform: scale(0.2) rotate(0deg); }
+      30% { opacity: 1; transform: scale(1.6) rotate(45deg); filter: drop-shadow(0 0 8px #38bdf8); }
+      100% { opacity: 0; transform: scale(0.1) rotate(90deg); }
+    }
+
+    /* 三日月状の光線スラッシュエフェクト */
+    .slash-trail {
+      position: absolute;
+      width: 210px;
+      height: 210px;
+      pointer-events: none;
+      opacity: 0;
+      z-index: 20;
+      top: 15%;
+      left: 10%;
+      transform: rotate(-15deg);
+    }
+
+    .slash-trail.active {
+      animation: crescentSlash 0.35s ease-out forwards;
+    }
+
+    @keyframes crescentSlash {
       0% {
-        transform: scale(1) rotate(0deg);
+        opacity: 0;
+        transform: rotate(-35deg) scale(0.5);
+        filter: blur(4px);
       }
-      20% {
-        /* 後ろへグッと引いてタメを作る */
-        transform: scale(0.96) translateX(-14px) rotate(-14deg);
+      25% {
+        opacity: 1;
+        transform: rotate(5deg) scale(1.15);
+        filter: blur(0px) drop-shadow(0 0 12px #38bdf8);
       }
-      45% {
-        /* 一気に前へフルスイング！ */
-        transform: scale(1.15) translateX(18px) rotate(24deg);
-      }
-      75% {
-        /* フォロースルーの余韻 */
-        transform: scale(1.04) translateX(4px) rotate(-4deg);
+      60% {
+        opacity: 0.9;
+        transform: rotate(20deg) scale(1.22);
       }
       100% {
-        transform: scale(1) rotate(0deg);
+        opacity: 0;
+        transform: rotate(35deg) scale(1.3);
+        filter: blur(6px);
       }
     }
 
-    .avatar-idle {
-      animation: avatar-breathe 3.4s ease-in-out infinite;
-      transform-origin: center bottom;
-    }
-
-    .avatar-swing-anim {
-      animation: full-swing 0.55s cubic-bezier(0.18, 0.89, 0.32, 1.28) !important;
-      transform-origin: center 85%;
-    }
-
-    /* 背景サンバースト回転 */
-    @keyframes spin-slow {
-      from { transform: rotate(0deg); }
-      to { transform: rotate(360deg); }
-    }
-    .sunburst-spin {
-      animation: spin-slow 24s linear infinite;
-    }
-
-    /* 要解除アラートの点滅 */
-    @keyframes alert-pulse {
-      0%, 100% {
-        border-color: #facc15;
-        box-shadow: 0 0 12px rgba(250, 204, 21, 0.6), inset 0 0 8px rgba(250, 204, 21, 0.2);
-      }
-      50% {
-        border-color: #ef4444;
-        box-shadow: 0 0 16px rgba(239, 68, 68, 0.8), inset 0 0 12px rgba(239, 68, 68, 0.3);
-      }
-    }
-    .card-alert-glow {
-      animation: alert-pulse 1.8s infinite ease-in-out;
-    }
-
-    /* 吹き出しの三角形 */
-    .speech-tail::after {
-      content: '';
+    .comic-bubble {
       position: absolute;
-      bottom: -6px;
-      left: 50%;
-      transform: translateX(-50%);
+      top: -24px;
+      right: 0px;
+      background: #ffffff;
+      color: #0f172a;
+      padding: 6px 10px;
+      border-radius: 12px;
+      font-size: 0.72rem;
+      font-weight: 900;
+      max-width: 175px;
+      line-height: 1.25;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.45);
+      border: 2px solid #0f172a;
+      z-index: 10;
+      animation: popBubble 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    .comic-bubble::after {
+      content: "";
+      position: absolute;
+      bottom: -7px;
+      left: 20px;
+      border-width: 7px 7px 0;
+      border-style: solid;
+      border-color: #ffffff transparent;
+      display: block;
       width: 0;
-      height: 0;
-      border-left: 6px solid transparent;
-      border-right: 6px solid transparent;
-      border-top: 6px solid #ffffff;
+    }
+
+    .comic-bubble::before {
+      content: "";
+      position: absolute;
+      bottom: -10px;
+      left: 19px;
+      border-width: 9px 8px 0;
+      border-style: solid;
+      border-color: #0f172a transparent;
+      display: block;
+      width: 0;
+    }
+
+    @keyframes popBubble {
+      0% { transform: scale(0.7) translateY(6px); opacity: 0; }
+      100% { transform: scale(1) translateY(0); opacity: 1; }
+    }
+
+    .engine-card {
+      background: linear-gradient(135deg, #18233c 0%, #10192b 100%);
+      border: 1.5px solid #2d4168;
+      border-radius: 10px;
+      box-shadow: 0 3px 0 #0a0f1d, inset 0 1px 0 rgba(255, 255, 255, 0.1);
+      transition: transform 0.1s ease;
+      cursor: pointer;
+    }
+
+    .engine-card:active {
+      transform: scale(0.97);
+    }
+
+    .alert-pulse {
+      animation: warningBorder 1.2s ease-in-out infinite alternate;
+      border-color: #facc15 !important;
+    }
+
+    @keyframes warningBorder {
+      0% { box-shadow: 0 0 4px rgba(250, 204, 21, 0.3), inset 0 0 2px rgba(250, 204, 21, 0.2); }
+      100% { box-shadow: 0 0 14px rgba(250, 204, 21, 0.8), inset 0 0 8px rgba(250, 204, 21, 0.4); }
+    }
+
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(4, 7, 14, 0.82);
+      backdrop-filter: blur(5px);
+      z-index: 100;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+
+    .modal-overlay.active {
+      display: flex;
     }
   </style>
 </head>
-<body class="text-white flex flex-col justify-between p-2 max-w-[430px] mx-auto select-none">
+<body>
 
-  <!-- ① ヘッダー：ブロスタ風トロフィーロード＆ストリーク -->
-  <header class="w-full bg-slate-900/80 backdrop-blur-md rounded-2xl border-2 border-slate-700/80 p-2 shadow-lg flex-shrink-0">
+  <!-- Sunburst Background -->
+  <div class="brawl-bg-pattern"></div>
+  <div class="sunburst"></div>
+
+  <header class="w-full max-w-md flex flex-col gap-1.5 flex-shrink-0 z-10">
     <div class="flex items-center justify-between gap-2">
-      
-      <!-- トロフィー ＆ ランク -->
-      <div class="flex items-center gap-1.5 flex-1 min-w-0">
-        <div class="bg-amber-500/20 border border-amber-400/50 rounded-xl p-1 flex items-center justify-center flex-shrink-0">
-          <span class="text-xl leading-none">🏆</span>
-        </div>
-        <div class="flex flex-col min-w-0 flex-1">
-          <div class="flex items-center justify-between text-[11px] font-black leading-none mb-1">
-            <span id="header-rank" class="text-amber-300 font-extrabold tracking-wide">ゴールドⅠ</span>
-            <span id="header-trophies" class="text-slate-300 font-mono">1,450 / 1,600</span>
+      <!-- トロフィーロード -->
+      <div class="brawl-panel px-3 py-1.5 flex items-center gap-2.5 flex-1">
+        <span class="text-xl">🏆</span>
+        <div class="flex flex-col flex-1 min-w-0">
+          <div class="flex items-center justify-between text-xs font-black">
+            <span class="text-amber-400 truncate" id="user-rank-badge">ゴールドⅠ</span>
+            <span class="text-slate-300 font-mono text-[11px]" id="user-trophy-text">1,450 / 1,600</span>
           </div>
-          <!-- プログレスバー -->
-          <div class="w-full h-1.5 bg-slate-800 rounded-full overflow-hidden border border-slate-700">
-            <div id="trophy-progress-bar" class="h-full bg-gradient-to-r from-amber-400 to-yellow-300 rounded-full" style="width: 72%;"></div>
+          <!-- 進行プログレスバー -->
+          <div class="w-full h-2 bg-slate-900 rounded-full overflow-hidden mt-0.5 border border-slate-700">
+            <div id="trophy-progress" class="h-full bg-gradient-to-r from-amber-500 to-yellow-300 rounded-full" style="width: 75%;"></div>
           </div>
         </div>
       </div>
 
-      <!-- ストリーク炎バッジ -->
-      <div class="bg-orange-500/20 border border-orange-500/40 rounded-xl px-2 py-1 flex items-center gap-1 flex-shrink-0 shadow-sm">
-        <span class="text-base animate-bounce leading-none">🔥</span>
-        <div class="flex flex-col text-left">
-          <span class="text-[9px] font-black text-orange-400 leading-tight"><span id="streak-days">5</span>日連続!</span>
-          <span class="text-[7px] font-extrabold text-orange-300 leading-tight">EXP 1.5倍</span>
+      <!-- 連続練習ストリーク -->
+      <div class="brawl-panel px-2.5 py-1.5 flex items-center gap-1 flex-shrink-0 bg-gradient-to-r from-rose-950/60 to-orange-950/60 border-orange-500/40">
+        <span class="text-lg animate-bounce">🔥</span>
+        <div class="flex flex-col">
+          <span class="text-[10px] text-orange-300 font-bold leading-none">STREAK</span>
+          <span class="text-xs font-black text-amber-300 leading-tight" id="user-streak-text">5日連！</span>
         </div>
       </div>
 
-      <!-- 設定・プロフ編集アイコン -->
-      <button onclick="openSettingsModal()" class="bg-slate-800 hover:bg-slate-700 active:scale-90 border border-slate-600 rounded-xl w-8 h-8 flex items-center justify-center text-sm transition shadow flex-shrink-0" title="選手設定">
+      <!-- 設定アイコン -->
+      <button id="btn-open-settings" class="brawl-panel w-9 h-9 flex items-center justify-center text-lg active:scale-90 transition-transform flex-shrink-0">
         ⚙️
       </button>
     </div>
   </header>
 
-
-  <!-- ② 中央：マイキャラアバター（躍動感＆タップスイング演出） -->
-  <section class="relative flex flex-col items-center justify-center flex-1 my-1 min-h-0">
+  <main class="w-full max-w-md flex-1 flex flex-col justify-around py-1 min-h-0 relative z-10">
     
-    <!-- 漫画風のセリフ吹き出し -->
-    <div id="speech-bubble" onclick="triggerAvatarAction()" class="speech-tail relative bg-white text-slate-900 px-3 py-1.5 rounded-2xl border-2 border-slate-900 shadow-md max-w-[85%] text-center cursor-pointer transition transform active:scale-95 mb-1 z-20">
-      <p id="speech-text" class="text-[11px] font-black leading-tight text-emerald-800">
-        💬 「バットの芯で捉える感覚、研ぎ澄まそうぜ！」
-      </p>
-    </div>
+    <!-- 中央アバター表示部 -->
+    <section class="relative w-full flex-1 flex items-center justify-center min-h-[150px] max-h-[220px]">
+      <div class="avatar-stage" id="avatar-clickable-area">
+        
+        <!-- セリフ吹き出し -->
+        <div class="comic-bubble" id="character-dialogue">
+          バットの芯で捉える感覚、研ぎ澄まそうぜ！💬
+        </div>
 
-    <!-- アバター表示領域（背後サンバースト ＋ キャラクター） -->
-    <div class="relative w-44 h-44 flex items-center justify-center cursor-pointer" onclick="triggerAvatarAction()">
-      <!-- サンバースト背景演出 -->
-      <div class="absolute inset-0 sunburst-spin opacity-20 pointer-events-none flex items-center justify-center">
-        <svg viewBox="0 0 200 200" class="w-full h-full text-emerald-400 fill-current">
-          <polygon points="100,100 85,0 115,0"/>
-          <polygon points="100,100 170,29 191,50"/>
-          <polygon points="100,100 200,85 200,115"/>
-          <polygon points="100,100 171,170 150,191"/>
-          <polygon points="100,100 115,200 85,200"/>
-          <polygon points="100,100 29,171 9,150"/>
-          <polygon points="100,100 0,115 0,85"/>
-          <polygon points="100,100 29,29 50,9"/>
-        </svg>
+        <!-- キャラクターステージ -->
+        <div class="character-container" id="character-wrapper">
+          <!-- 自作イラスト画像（未ロード時はフォールバック表示） -->
+          <img 
+            id="avatar-image-node" 
+            src="character.png" 
+            alt="マイキャラアバター" 
+            class="char-image"
+            onerror="this.onerror=null; this.src='https://placehold.co/240x240/131c31/38bdf8?text=⚾+READY!';"
+          />
+
+          <!-- 目がキラーン！と光る閃光スパーク -->
+          <div class="eye-flare eye-left" id="eye-flash-left"></div>
+          <div class="eye-flare eye-right" id="eye-flash-right"></div>
+
+          <!-- バット軌道の三日月スラッシュ光弧 -->
+          <svg class="slash-trail" id="slash-effect" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <linearGradient id="slashGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#ffffff" stop-opacity="1" />
+                <stop offset="35%" stop-color="#38bdf8" stop-opacity="0.9" />
+                <stop offset="70%" stop-color="#818cf8" stop-opacity="0.6" />
+                <stop offset="100%" stop-color="#c084fc" stop-opacity="0" />
+              </linearGradient>
+            </defs>
+            <path d="M 20,165 C 50,75 125,25 185,25 C 130,55 75,100 48,172 Z" fill="url(#slashGradient)" />
+          </svg>
+        </div>
+
       </div>
 
-      <!-- 足元のドロップシャドウ -->
-      <div class="absolute bottom-2 w-28 h-6 bg-slate-950/70 rounded-full blur-sm pointer-events-none"></div>
-
-      <!-- アバター画像本体（character.png） -->
-      <img id="avatar-img" 
-           src="character.png" 
-           alt="マイアバター" 
-           class="avatar-idle relative z-10 w-full h-full object-contain filter drop-shadow-[0_8px_12px_rgba(0,0,0,0.6)]"
-           onerror="handleImageFallback(this)">
-    </div>
-
-    <!-- キャラ足元情報バッジ -->
-    <div class="flex items-center gap-2 mt-0.5 z-20">
-      <div class="bg-slate-900/90 border border-emerald-500/50 rounded-full px-3 py-0.5 text-xs font-black shadow-md flex items-center gap-1.5">
-        <span class="text-emerald-400">👤</span>
-        <span id="player-label-name" class="text-white">タイガ</span>
-        <span class="text-amber-400 font-mono">(Lv.<span id="player-label-lv">14</span>)</span>
+      <!-- 足元ラベル -->
+      <div class="absolute -bottom-1 flex items-center gap-1.5 bg-slate-950/80 px-3 py-0.5 rounded-full border border-cyan-500/50 shadow-lg">
+        <span class="text-xs font-black text-white" id="player-label-name">👤 タイガ (Lv.14)</span>
+        <span class="text-[10px] text-cyan-400 font-bold">⚡ 身体エンジン総合</span>
       </div>
-      <div class="bg-indigo-950/80 border border-indigo-400/50 rounded-full px-2.5 py-0.5 text-[10px] font-black text-indigo-300 shadow">
-        ⚡ 身体エンジン覚醒中
-      </div>
-    </div>
-  </section>
+    </section>
 
-
-  <!-- ③ 身体4大エンジン（覚醒ステータス・ドック）2×2グリッド -->
-  <section class="w-full mb-2 flex-shrink-0">
-    <div class="flex items-center justify-between px-1 mb-1">
-      <span class="text-[10px] font-black text-slate-400 tracking-wider flex items-center gap-1">
-        ⚙️ 身体4大エンジン覚醒ドック
-      </span>
-      <span class="text-[9px] font-extrabold text-emerald-400">※タップで詳細解説</span>
-    </div>
-
-    <div class="grid grid-cols-2 gap-1.5">
-      
-      <!-- 1. 脳内GPS（身体図式） -->
-      <div onclick="openEngineDetail('schema')" class="bg-slate-900/90 border-2 border-slate-700/80 hover:border-emerald-500/80 rounded-xl p-2 cursor-pointer active:scale-95 transition shadow">
-        <div class="flex items-center justify-between text-[10px] font-black mb-0.5">
-          <span class="text-cyan-300 truncate">🕹️ じぶん操作力 (脳内GPS)</span>
-        </div>
-        <div class="flex items-baseline justify-between">
-          <span class="text-base font-black text-white font-mono">ズレ: <span id="val-schema">4</span> <span class="text-xs font-bold text-slate-400">cm</span></span>
-          <span id="status-schema" class="text-[10px] font-black text-amber-300">【★ 覚醒度 85%】</span>
-        </div>
+    <section class="w-full flex flex-col gap-1 mt-1">
+      <div class="flex items-center justify-between px-1 text-[11px] font-black text-slate-400">
+        <span>⚙️ 身体4大覚醒ドック</span>
+        <span class="text-amber-400 text-[10px]">タップで効果をチェック 👆</span>
       </div>
 
-      <!-- 2. しなり（柔軟性） ★要注意アラート枠 -->
-      <div id="card-flex" onclick="openEngineDetail('flex')" class="bg-slate-900/90 border-2 border-yellow-400 card-alert-glow rounded-xl p-2 cursor-pointer active:scale-95 transition shadow">
-        <div class="flex items-center justify-between text-[10px] font-black mb-0.5">
-          <span class="text-amber-300 truncate">🏹 飛距離・球速のしなり</span>
-          <span class="text-[8px] bg-red-600 text-white font-black px-1 rounded-full">要解除!</span>
+      <div class="grid grid-cols-2 gap-2">
+        <!-- ① じぶん操作力 (身体図式) -->
+        <div class="engine-card p-2 flex flex-col justify-between" onclick="showEngineExplanation('schema')">
+          <div class="flex items-center justify-between text-[11px]">
+            <span class="text-slate-300 font-bold truncate">🕹️ じぶん操作力</span>
+            <span class="text-[10px] text-amber-300 font-black">ズレ: 4 cm</span>
+          </div>
+          <div class="mt-1 flex items-center justify-between">
+            <span class="text-[11px] font-black text-amber-400">【★ 覚醒度 85%】</span>
+            <span class="text-[9px] text-slate-400">Lv.UP間近</span>
+          </div>
         </div>
-        <div class="flex items-baseline justify-between">
-          <span class="text-base font-black text-white font-mono">回旋: <span id="val-flex">38</span> <span class="text-xs font-bold text-slate-400">°</span></span>
-          <span id="status-flex" class="text-[10px] font-black text-yellow-300">【🔒 あと12°で覚醒！】</span>
+
+        <!-- ② 飛距離・球速のしなり (柔軟性) ※要解除アラート枠 -->
+        <div class="engine-card p-2 flex flex-col justify-between alert-pulse relative" onclick="showEngineExplanation('flex')">
+          <div class="flex items-center justify-between text-[11px]">
+            <span class="text-yellow-300 font-black truncate">🏹 飛距離のしなり</span>
+            <span class="text-[10px] text-yellow-200 font-black">回旋: 38°</span>
+          </div>
+          <div class="mt-1 flex items-center justify-between">
+            <span class="text-[11px] font-black text-yellow-300">【🔒 あと12°で覚醒】</span>
+            <span class="text-[9px] bg-red-500/80 text-white px-1 rounded font-bold">⚠️ 要解除</span>
+          </div>
+        </div>
+
+        <!-- ③ 崩れない鉄壁の軸足 (バランス) -->
+        <div class="engine-card p-2 flex flex-col justify-between" onclick="showEngineExplanation('balance')">
+          <div class="flex items-center justify-between text-[11px]">
+            <span class="text-slate-300 font-bold truncate">⚓ 崩れない鉄壁の軸足</span>
+            <span class="text-[10px] text-cyan-300 font-black">キープ: 25 秒</span>
+          </div>
+          <div class="mt-1 flex items-center justify-between">
+            <span class="text-[11px] font-black text-cyan-400">【🌟 MASTER達成】</span>
+            <span class="text-[9px] text-cyan-300">殿堂入り</span>
+          </div>
+        </div>
+
+        <!-- ④ インパクト爆発バネ (瞬発力) -->
+        <div class="engine-card p-2 flex flex-col justify-between" onclick="showEngineExplanation('spring')">
+          <div class="flex items-center justify-between text-[11px]">
+            <span class="text-slate-300 font-bold truncate">💥 爆発バネ</span>
+            <span class="text-[10px] text-orange-300 font-black">バネ: 32 cm</span>
+          </div>
+          <div class="mt-1 flex items-center justify-between">
+            <span class="text-[11px] font-black text-orange-400">【⚡ LEVEL 2】</span>
+            <span class="text-[9px] text-slate-400">順調に成長</span>
+          </div>
         </div>
       </div>
+    </section>
 
-      <!-- 3. 軸足（バランス） -->
-      <div onclick="openEngineDetail('balance')" class="bg-slate-900/90 border-2 border-slate-700/80 hover:border-cyan-500/80 rounded-xl p-2 cursor-pointer active:scale-95 transition shadow">
-        <div class="flex items-center justify-between text-[10px] font-black mb-0.5">
-          <span class="text-emerald-300 truncate">⚓ 崩れない鉄壁の軸足</span>
-        </div>
-        <div class="flex items-baseline justify-between">
-          <span class="text-base font-black text-white font-mono">キープ: <span id="val-balance">25</span> <span class="text-xs font-bold text-slate-400">秒</span></span>
-          <span id="status-balance" class="text-[10px] font-black text-cyan-300">【🌟 MASTER達成！】</span>
-        </div>
-      </div>
+  </main>
 
-      <!-- 4. バネ（瞬発力） -->
-      <div onclick="openEngineDetail('spring')" class="bg-slate-900/90 border-2 border-slate-700/80 hover:border-orange-500/80 rounded-xl p-2 cursor-pointer active:scale-95 transition shadow">
-        <div class="flex items-center justify-between text-[10px] font-black mb-0.5">
-          <span class="text-orange-300 truncate">💥 インパクト爆発バネ</span>
-        </div>
-        <div class="flex items-baseline justify-between">
-          <span class="text-base font-black text-white font-mono">バネ: <span id="val-spring">32</span> <span class="text-xs font-bold text-slate-400">cm</span></span>
-          <span id="status-spring" class="text-[10px] font-black text-orange-400">【⚡ LEVEL 2】</span>
-        </div>
-      </div>
-
-    </div>
-  </section>
-
-
-  <!-- ④ 2大AI分析ビッグバトルボタン（画面の主役・親指で押しやすい下部配置） -->
-  <section class="w-full flex flex-col gap-2 flex-shrink-0 mb-1">
+  <footer class="w-full max-w-md flex flex-col gap-2 flex-shrink-0 z-10 pb-1">
     
-    <!-- 1. 打撃分析ボタン（エメラルドグリーン×ゴールド立体枠） -->
-    <a href="batting.html" onclick="playButtonSound()" class="btn-3d-brawl w-full bg-gradient-to-r from-emerald-500 via-teal-500 to-emerald-600 border-2 border-yellow-300 rounded-2xl py-2.5 px-3 flex items-center justify-between text-white no-underline">
-      <div class="flex items-center gap-2.5 min-w-0">
-        <span class="text-2xl filter drop-shadow">🏏</span>
-        <div class="flex flex-col text-left min-w-0">
-          <span class="text-sm font-black leading-tight tracking-wide text-white drop-shadow-[0_1px_2px_rgba(0,0,0,0.8)]">
-            【 打撃（バッティング）をAI分析する 】
-          </span>
-          <span class="text-[9px] font-bold text-yellow-200 truncate mt-0.5">
-            スイングの弱点を暴いて、ホームランパワー解放！
-          </span>
+    <!-- 2大ビッグバトルボタン -->
+    <div class="flex flex-col gap-2">
+      <!-- 🏏 打撃AI分析ボタン -->
+      <a href="batting.html" class="btn-3d btn-battle-batting w-full py-3 px-3 rounded-2xl flex items-center justify-between no-underline">
+        <div class="flex items-center gap-2 min-w-0">
+          <span class="text-3xl filter drop-shadow">🏏</span>
+          <div class="flex flex-col text-left min-w-0">
+            <span class="text-base font-black text-white leading-tight">打撃（バッティング）をAI分析する</span>
+            <span class="text-[10px] text-yellow-100 font-bold truncate">スイングの弱点を暴いて、ホームランパワー解放！</span>
+          </div>
         </div>
-      </div>
-      <span class="bg-yellow-400 text-slate-950 text-xs font-black px-2 py-1 rounded-xl shadow-inner flex-shrink-0 animate-pulse">
-        GO ➔
-      </span>
-    </a>
+        <span class="text-xl text-yellow-200 font-black pr-1">BRAWL ➔</span>
+      </a>
 
-    <!-- 2. 投球・送球分析ボタン（スカイブルー×ホワイト立体枠） -->
-    <a href="pitching.html" onclick="playButtonSound()" class="btn-3d-pitch w-full bg-gradient-to-r from-sky-500 via-blue-500 to-sky-600 border-2 border-white rounded-2xl py-2.5 px-3 flex items-center justify-between text-white no-underline">
-      <div class="flex items-center gap-2.5 min-w-0">
-        <span class="text-2xl filter drop-shadow">⚾</span>
-        <div class="flex flex-col text-left min-w-0">
-          <span class="text-sm font-black leading-tight tracking-wide text-white drop-shadow-[0_1px_2px_rgba(0,0,0,0.8)]">
-            【 投球・送球（スローイング）をAI分析する 】
-          </span>
-          <span class="text-[9px] font-bold text-sky-100 truncate mt-0.5">
-            フォームの弱点を暴いて、剛速球・レーザービーム！
-          </span>
+      <!-- ⚾ 投球AI分析ボタン -->
+      <a href="pitching.html" class="btn-3d btn-battle-pitching w-full py-2.5 px-3 rounded-2xl flex items-center justify-between no-underline">
+        <div class="flex items-center gap-2 min-w-0">
+          <span class="text-3xl filter drop-shadow">⚾</span>
+          <div class="flex flex-col text-left min-w-0">
+            <span class="text-sm font-black text-white leading-tight">投球・送球をAI分析する</span>
+            <span class="text-[10px] text-sky-100 font-bold truncate">フォームの弱点を暴いて、剛速球・レーザービーム！</span>
+          </div>
         </div>
-      </div>
-      <span class="bg-white text-blue-900 text-xs font-black px-2 py-1 rounded-xl shadow-inner flex-shrink-0 animate-pulse">
-        GO ➔
-      </span>
-    </a>
+        <span class="text-lg text-white font-black pr-1">PLAY ➔</span>
+      </a>
+    </div>
 
-  </section>
+    <!-- 最下部サブナビゲーション -->
+    <div class="flex items-center justify-between gap-2 pt-0.5">
+      <button onclick="openModal('carte-modal')" class="btn-3d flex-1 py-1.5 px-2 rounded-xl bg-slate-800 border border-slate-700 text-[11px] font-bold text-slate-300 hover:text-white">
+        📋 成長カルテ・履歴
+      </button>
+      <button onclick="openModal('tests-modal')" class="btn-3d flex-1 py-1.5 px-2 rounded-xl bg-slate-800 border border-slate-700 text-[11px] font-bold text-emerald-400 hover:text-emerald-300">
+        🏃 身体テスト単体ドック
+      </button>
+    </div>
 
-
-  <!-- ⑤ 最下部サブナビゲーション -->
-  <footer class="w-full flex items-center justify-between gap-2 pt-1 flex-shrink-0 border-t border-slate-800">
-    <button onclick="openModal('carte-modal')" class="btn-3d-sub flex-1 bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-600 rounded-xl py-2 px-1 text-xs font-black flex items-center justify-center gap-1">
-      <span>📋</span>
-      <span>成長カルテ・履歴</span>
-    </button>
-    <button onclick="openModal('test-dock-modal')" class="btn-3d-sub flex-1 bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-600 rounded-xl py-2 px-1 text-xs font-black flex items-center justify-center gap-1">
-      <span>🏃</span>
-      <span>身体テスト単体ドック</span>
-    </button>
   </footer>
 
-
-  <!-- モーダル：設定＆プロフ変更 -->
-  <div id="settings-modal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 hidden items-center justify-center p-4">
-    <div class="bg-slate-900 border-2 border-emerald-500 rounded-2xl p-4 w-full max-w-xs space-y-3 shadow-2xl">
-      <div class="flex justify-between items-center border-b border-slate-700 pb-2">
-        <h3 class="font-black text-sm text-emerald-400">⚙️ 選手プロファイル設定</h3>
-        <button onclick="closeModal('settings-modal')" class="text-slate-400 hover:text-white font-black text-base">✕</button>
+  <!-- ⚙️ 選手設定モーダル -->
+  <div id="settings-modal" class="modal-overlay" onclick="closeModalOnBackdrop(event, 'settings-modal')">
+    <div class="brawl-panel p-4 max-w-sm w-full bg-slate-900 border-cyan-500 space-y-3">
+      <div class="flex items-center justify-between border-b border-slate-700 pb-2">
+        <h3 class="font-black text-cyan-400 text-sm">⚙️ 選手プロフィールの変更</h3>
+        <button onclick="closeModal('settings-modal')" class="text-slate-400 hover:text-white font-black text-lg">✕</button>
       </div>
       <div class="space-y-2 text-xs">
         <div>
-          <label class="block text-slate-400 mb-1 font-bold">選手名</label>
-          <input id="input-prof-name" type="text" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-2 text-white font-bold">
+          <label class="block text-slate-400 mb-1 font-bold">選手名（ニックネーム）</label>
+          <input type="text" id="input-player-name" class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2 text-white font-black">
         </div>
         <div>
           <label class="block text-slate-400 mb-1 font-bold">所属チーム名</label>
-          <input id="input-prof-team" type="text" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-2 text-white font-bold">
+          <input type="text" id="input-team-name" class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2 text-white font-black">
         </div>
-        <div class="grid grid-cols-2 gap-2">
-          <div>
-            <label class="block text-slate-400 mb-1 font-bold">身長 (cm)</label>
-            <input id="input-prof-height" type="number" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-2 text-white font-bold">
-          </div>
-          <div>
-            <label class="block text-slate-400 mb-1 font-bold">レベル</label>
-            <input id="input-prof-level" type="number" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-2 text-white font-bold">
-          </div>
+        <div>
+          <label class="block text-slate-400 mb-1 font-bold">現在のレベル</label>
+          <input type="number" id="input-player-level" class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2 text-white font-black" min="1" max="99">
         </div>
       </div>
-      <button onclick="saveUserProfile()" class="w-full py-2.5 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black rounded-xl text-xs shadow-lg">
+      <button onclick="saveProfileSettings()" class="w-full py-2 bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-black rounded-xl shadow-md active:scale-95 transition-transform">
         設定を保存する
       </button>
     </div>
   </div>
 
-  <!-- モーダル：身体エンジン詳細解説 -->
-  <div id="engine-modal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 hidden items-center justify-center p-4">
-    <div class="bg-slate-900 border-2 border-slate-700 rounded-2xl p-4 w-full max-w-xs space-y-3 shadow-2xl">
-      <div class="flex justify-between items-center border-b border-slate-700 pb-2">
-        <h3 id="engine-modal-title" class="font-black text-sm text-amber-300">--</h3>
-        <button onclick="closeModal('engine-modal')" class="text-slate-400 hover:text-white font-black text-base">✕</button>
+  <!-- 💡 身体エンジン解説ポップアップ -->
+  <div id="explanation-modal" class="modal-overlay" onclick="closeModalOnBackdrop(event, 'explanation-modal')">
+    <div class="brawl-panel p-4 max-w-sm w-full bg-slate-900 border-amber-500 space-y-3">
+      <div class="flex items-center gap-2 border-b border-slate-700 pb-2">
+        <span id="expl-icon" class="text-2xl">🕹️</span>
+        <h3 id="expl-title" class="font-black text-amber-400 text-sm">--</h3>
       </div>
       <div class="space-y-2 text-xs leading-relaxed text-slate-200">
-        <p id="engine-modal-desc">--</p>
-        <div class="bg-slate-800/80 p-2.5 rounded-xl border border-slate-700">
-          <span class="text-[10px] font-black text-emerald-400 block mb-1">⚾ 野球でどう活躍できる？</span>
-          <p id="engine-modal-baseball" class="text-[11px] font-bold text-white">--</p>
+        <p class="font-bold text-cyan-300" id="expl-target">【野球でどう活躍できる？】</p>
+        <p id="expl-baseball-effect" class="bg-slate-950/80 p-2.5 rounded-lg border border-slate-800 text-amber-100">--</p>
+        <p class="text-[11px] text-slate-400" id="expl-advice">--</p>
+      </div>
+      <button onclick="closeModal('explanation-modal')" class="w-full py-2 bg-slate-800 hover:bg-slate-700 text-white font-bold rounded-xl active:scale-95">
+        閉じる
+      </button>
+    </div>
+  </div>
+
+  <!-- 📋 カルテ・履歴プレビューモーダル -->
+  <div id="carte-modal" class="modal-overlay" onclick="closeModalOnBackdrop(event, 'carte-modal')">
+    <div class="brawl-panel p-4 max-w-sm w-full bg-slate-900 border-slate-700 space-y-3 max-h-[80dvh] flex flex-col">
+      <div class="flex items-center justify-between border-b border-slate-700 pb-2">
+        <h3 class="font-black text-slate-200 text-sm">📋 成長カルテ・履歴</h3>
+        <button onclick="closeModal('carte-modal')" class="text-slate-400 hover:text-white font-black text-lg">✕</button>
+      </div>
+      <div class="overflow-y-auto space-y-2 flex-1 pr-1 text-xs" id="carte-summary-container">
+        <!-- JS動的レンダリング -->
+      </div>
+      <button onclick="closeModal('carte-modal')" class="w-full py-2 bg-slate-800 text-white font-bold rounded-xl active:scale-95">
+        閉じる
+      </button>
+    </div>
+  </div>
+
+  <!-- 🏃 身体テスト単体ドックモーダル -->
+  <div id="tests-modal" class="modal-overlay" onclick="closeModalOnBackdrop(event, 'tests-modal')">
+    <div class="brawl-panel p-4 max-w-sm w-full bg-slate-900 border-emerald-500 space-y-3">
+      <div class="flex items-center justify-between border-b border-slate-700 pb-2">
+        <h3 class="font-black text-emerald-400 text-sm">🏃 身体テスト単体ドック</h3>
+        <button onclick="closeModal('tests-modal')" class="text-slate-400 hover:text-white font-black text-lg">✕</button>
+      </div>
+      <p class="text-[11px] text-slate-300">AI解析を挟まず、鍛えたい項目だけを直接測って1分リセットできるよ！</p>
+      <div class="space-y-1.5 text-xs">
+        <div class="p-2 bg-slate-950 border border-slate-800 rounded-lg flex items-center justify-between">
+          <span>👣 目隠し足踏みテスト (身体図式)</span>
+          <span class="text-cyan-400 font-bold">準備完了</span>
+        </div>
+        <div class="p-2 bg-slate-950 border border-slate-800 rounded-lg flex items-center justify-between">
+          <span>🏹 四つ這い胸椎回旋テスト (柔軟性)</span>
+          <span class="text-yellow-400 font-bold">要解除！</span>
+        </div>
+        <div class="p-2 bg-slate-950 border border-slate-800 rounded-lg flex items-center justify-between">
+          <span>⚖️ 片足立ちキープテスト (バランス)</span>
+          <span class="text-cyan-400 font-bold">MASTER</span>
+        </div>
+        <div class="p-2 bg-slate-950 border border-slate-800 rounded-lg flex items-center justify-between">
+          <span>🦘 沈み込み垂直跳びテスト (瞬発力)</span>
+          <span class="text-orange-400 font-bold">Lv.2</span>
         </div>
       </div>
-      <button onclick="closeModal('engine-modal')" class="w-full py-2 bg-slate-800 hover:bg-slate-700 text-white font-black rounded-xl text-xs">
-        とじる
+      <button onclick="closeModal('tests-modal')" class="w-full py-2 bg-slate-800 text-white font-bold rounded-xl active:scale-95">
+        もどる
       </button>
     </div>
-  </div>
-
-  <!-- モーダル：成長カルテ（簡易版） -->
-  <div id="carte-modal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 hidden items-center justify-center p-4">
-    <div class="bg-slate-900 border-2 border-slate-700 rounded-2xl p-4 w-full max-w-xs space-y-3 shadow-2xl">
-      <div class="flex justify-between items-center border-b border-slate-700 pb-2">
-        <h3 class="font-black text-sm text-emerald-400">📋 成長カルテ・履歴</h3>
-        <button onclick="closeModal('carte-modal')" class="text-slate-400 hover:text-white font-black text-base">✕</button>
-      </div>
-      <div class="text-xs space-y-2 text-slate-300">
-        <p>過去の測定履歴は各分析画面（打撃AI / 投球AI）のカルテからいつでも閲覧・クラウド同期が可能です。</p>
-        <div class="bg-slate-800 p-2.5 rounded-xl border border-slate-700 space-y-1">
-          <p class="font-bold text-white">🏆 現在のチーム: <span id="carte-team-name" class="text-emerald-400">--</span></p>
-          <p class="font-bold text-white">👤 選手名: <span id="carte-player-name" class="text-amber-400">--</span></p>
-        </div>
-      </div>
-      <button onclick="closeModal('carte-modal')" class="w-full py-2 bg-slate-800 hover:bg-slate-700 text-white font-black rounded-xl text-xs">
-        とじる
-      </button>
-    </div>
-  </div>
-
-  <!-- モーダル：身体テスト単体ドック -->
-  <div id="test-dock-modal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 hidden items-center justify-center p-4">
-    <div class="bg-slate-900 border-2 border-slate-700 rounded-2xl p-4 w-full max-w-xs space-y-3 shadow-2xl">
-      <div class="flex justify-between items-center border-b border-slate-700 pb-2">
-        <h3 class="font-black text-sm text-cyan-400">🏃 身体テスト単体ドック</h3>
-        <button onclick="closeModal('test-dock-modal')" class="text-slate-400 hover:text-white font-black text-base">✕</button>
-      </div>
-      <div class="space-y-2 text-xs">
-        <button onclick="openSingleTest('stepping')" class="w-full p-2 bg-slate-800 hover:bg-slate-700 rounded-xl text-left border border-slate-700 flex justify-between items-center font-bold">
-          <span>👣 目隠し足踏みズレテスト</span>
-          <span class="text-cyan-400 font-mono">➔</span>
-        </button>
-        <button onclick="openSingleTest('spine')" class="w-full p-2 bg-slate-800 hover:bg-slate-700 rounded-xl text-left border border-slate-700 flex justify-between items-center font-bold">
-          <span>🦴 四つ這い胸椎回旋テスト</span>
-          <span class="text-amber-400 font-mono">➔</span>
-        </button>
-        <button onclick="openSingleTest('balance')" class="w-full p-2 bg-slate-800 hover:bg-slate-700 rounded-xl text-left border border-slate-700 flex justify-between items-center font-bold">
-          <span>⚓ 片足立ちキープテスト</span>
-          <span class="text-emerald-400 font-mono">➔</span>
-        </button>
-        <button onclick="openSingleTest('jump')" class="w-full p-2 bg-slate-800 hover:bg-slate-700 rounded-xl text-left border border-slate-700 flex justify-between items-center font-bold">
-          <span>🦘 沈み込み垂直跳びテスト</span>
-          <span class="text-orange-400 font-mono">➔</span>
-        </button>
-      </div>
-      <button onclick="closeModal('test-dock-modal')" class="w-full py-2 bg-slate-800 hover:bg-slate-700 text-white font-black rounded-xl text-xs">
-        とじる
-      </button>
-    </div>
-  </div>
-
-  <!-- トースト通知 -->
-  <div id="toast" class="fixed bottom-16 left-1/2 -translate-x-1/2 bg-slate-900/95 border-2 border-emerald-400 text-white text-xs font-black px-4 py-2 rounded-full shadow-2xl opacity-0 pointer-events-none transition-opacity duration-200 z-50 text-center">
   </div>
 
   <script>
     // ==========================================
-    // 1. Web Audio API による効果音生成エンジン
+    // 1. Web Audio API シンセサイザー効果音
     // ==========================================
     let audioCtx = null;
 
@@ -480,53 +643,60 @@
       return audioCtx;
     }
 
-    // スイング風切り音（シュバッ！）
-    function playSwingSound() {
+    // 短い決定・タップ音
+    function playTapSound() {
       try {
         const ctx = getAudioContext();
         const osc = ctx.createOscillator();
         const gain = ctx.createGain();
-
-        // ノイズ風の急降下ピッチ
-        osc.type = 'sine';
-        osc.frequency.setValueAtTime(450, ctx.currentTime);
-        osc.frequency.exponentialRampToValueAtTime(80, ctx.currentTime + 0.18);
-
-        gain.gain.setValueAtTime(0.4, ctx.currentTime);
-        gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.18);
-
-        osc.connect(gain);
-        gain.connect(ctx.destination);
-
-        osc.start();
-        osc.stop(ctx.currentTime + 0.2);
-      } catch (e) {}
-    }
-
-    // ボタンタップ音（ピコッ！）
-    function playButtonSound() {
-      try {
-        const ctx = getAudioContext();
-        const osc = ctx.createOscillator();
-        const gain = ctx.createGain();
-
         osc.type = 'triangle';
-        osc.frequency.setValueAtTime(320, ctx.currentTime);
-        osc.frequency.exponentialRampToValueAtTime(640, ctx.currentTime + 0.08);
-
+        osc.frequency.setValueAtTime(440, ctx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(880, ctx.currentTime + 0.08);
         gain.gain.setValueAtTime(0.2, ctx.currentTime);
         gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.08);
-
         osc.connect(gain);
         gain.connect(ctx.destination);
-
         osc.start();
-        osc.stop(ctx.currentTime + 0.09);
-      } catch (e) {}
+        osc.stop(ctx.currentTime + 0.08);
+      } catch(e) {}
+    }
+
+    // 目が光る「キラーン！」閃光音 ＋ バットの「ビシュッ！」風切りスラッシュ音
+    function playSlashSound() {
+      try {
+        const ctx = getAudioContext();
+        const now = ctx.currentTime;
+
+        // 1. キラーン！（高音クリスタルベル）
+        const bellOsc = ctx.createOscillator();
+        const bellGain = ctx.createGain();
+        bellOsc.type = 'sine';
+        bellOsc.frequency.setValueAtTime(1480, now);
+        bellOsc.frequency.exponentialRampToValueAtTime(2960, now + 0.12);
+        bellGain.gain.setValueAtTime(0.25, now);
+        bellGain.gain.exponentialRampToValueAtTime(0.001, now + 0.28);
+        bellOsc.connect(bellGain);
+        bellGain.connect(ctx.destination);
+        bellOsc.start(now);
+        bellOsc.stop(now + 0.28);
+
+        // 2. ビシュッ！！（急降下する鋭い風切り音）
+        const slashOsc = ctx.createOscillator();
+        const slashGain = ctx.createGain();
+        slashOsc.type = 'sawtooth';
+        slashOsc.frequency.setValueAtTime(650, now);
+        slashOsc.frequency.exponentialRampToValueAtTime(110, now + 0.18);
+        slashGain.gain.setValueAtTime(0.3, now);
+        slashGain.gain.exponentialRampToValueAtTime(0.01, now + 0.18);
+        slashOsc.connect(slashGain);
+        slashGain.connect(ctx.destination);
+        slashOsc.start(now);
+        slashOsc.stop(now + 0.18);
+      } catch(e) {}
     }
 
     // ==========================================
-    // 2. データ初期化 & localStorage 管理
+    // 2. データ初期化とlocalStorage管理
     // ==========================================
     const DEFAULT_PROFILE = {
       name: "タイガ",
@@ -538,240 +708,235 @@
       team: "安岡少年軟式野球部"
     };
 
-    const DEFAULT_ENGINES = {
-      schema: { val: 4, unit: "cm", status: "【★ 覚醒度 85%】", alert: false },
-      flex: { val: 38, unit: "°", status: "【🔒 あと12°で覚醒！】", alert: true },
-      balance: { val: 25, unit: "秒", status: "【🌟 MASTER達成！】", alert: false },
-      spring: { val: 32, unit: "cm", status: "【⚡ LEVEL 2】", alert: false }
-    };
-
-    function loadData() {
-      let profile = DEFAULT_PROFILE;
-      let engines = DEFAULT_ENGINES;
-
-      try {
-        const savedProf = localStorage.getItem('baseball_user_profile');
-        if (savedProf) profile = { ...DEFAULT_PROFILE, ...JSON.parse(savedProf) };
-        else localStorage.setItem('baseball_user_profile', JSON.stringify(DEFAULT_PROFILE));
-
-        const savedEng = localStorage.getItem('baseball_body_engine_v1');
-        if (savedEng) engines = { ...DEFAULT_ENGINES, ...JSON.parse(savedEng) };
-        else localStorage.setItem('baseball_body_engine_v1', JSON.stringify(DEFAULT_ENGINES));
-      } catch (e) {
-        console.warn("Storage load error:", e);
-      }
-
-      applyProfileUI(profile);
-      applyEnginesUI(engines);
-    }
-
-    function applyProfileUI(p) {
-      document.getElementById('header-rank').textContent = p.rank || "ゴールドⅠ";
-      document.getElementById('header-trophies').textContent = `${p.trophies || 1450} / 1,600`;
-      document.getElementById('streak-days').textContent = p.streak || 5;
-      document.getElementById('player-label-name').textContent = p.name || "タイガ";
-      document.getElementById('player-label-lv').textContent = p.level || 14;
-
-      const pct = Math.min(100, Math.max(10, ((p.trophies % 500) / 500) * 100));
-      document.getElementById('trophy-progress-bar').style.width = `${pct}%`;
-
-      document.getElementById('carte-team-name').textContent = p.team || "安岡少年軟式野球部";
-      document.getElementById('carte-player-name').textContent = p.name || "タイガ";
-    }
-
-    function applyEnginesUI(e) {
-      if (e.schema) {
-        document.getElementById('val-schema').textContent = e.schema.val;
-        document.getElementById('status-schema').textContent = e.schema.status;
-      }
-      if (e.flex) {
-        document.getElementById('val-flex').textContent = e.flex.val;
-        document.getElementById('status-flex').textContent = e.flex.status;
-        const cardFlex = document.getElementById('card-flex');
-        if (e.flex.alert) {
-          cardFlex.classList.add('card-alert-glow', 'border-yellow-400');
-        } else {
-          cardFlex.classList.remove('card-alert-glow', 'border-yellow-400');
-        }
-      }
-      if (e.balance) {
-        document.getElementById('val-balance').textContent = e.balance.val;
-        document.getElementById('status-balance').textContent = e.balance.status;
-      }
-      if (e.spring) {
-        document.getElementById('val-spring').textContent = e.spring.val;
-        document.getElementById('status-spring').textContent = e.spring.status;
-      }
-    }
-
-    // ==========================================
-    // 3. アバターのタップ＆フルスイングアクション
-    // ==========================================
-    const SPEECHES = [
-      "💬 「バットの芯で捉える感覚、研ぎ澄まそうぜ！」",
-      "💬 「今日も鋭いスイングと剛速球を撮ろうぜ！」",
-      "💬 「昨日のストレッチで背中がしなってるぞ！」",
-      "💬 「指先にエネルギーを集めて、剛速球を突き刺そう！」",
-      "💬 「軸足でしっかりタメて、変化球も力強く打ち返そうぜ！」",
-      "💬 「身体のブレーキを外せば、柵越えホームラン連発だ！」"
-    ];
-
-    let isSwinging = false;
-
-    function triggerAvatarAction() {
-      if (isSwinging) return;
-      isSwinging = true;
-
-      // 1. スイング風切り音を再生
-      playSwingSound();
-
-      // 2. フルスイングアニメーションの付与
-      const avatar = document.getElementById('avatar-img');
-      avatar.classList.remove('avatar-idle');
-      avatar.classList.add('avatar-swing-anim');
-
-      // 3. 吹き出しセリフのランダム変更
-      const bubble = document.getElementById('speech-bubble');
-      const textElem = document.getElementById('speech-text');
-      const currentText = textElem.textContent;
-      let nextText = currentText;
-      while (nextText === currentText) {
-        nextText = SPEECHES[Math.floor(Math.random() * SPEECHES.length)];
-      }
-      textElem.textContent = nextText;
-
-      // 吹き出しのポンと弾む演出
-      bubble.style.transform = 'scale(1.08)';
-      setTimeout(() => {
-        bubble.style.transform = '';
-      }, 200);
-
-      // 4. アニメーション完了後にアイドル状態へ復帰
-      setTimeout(() => {
-        avatar.classList.remove('avatar-swing-anim');
-        avatar.classList.add('avatar-idle');
-        isSwinging = false;
-      }, 550);
-    }
-
-    // 画像がまだ存在しない場合のフォールバック表示
-    function handleImageFallback(img) {
-      img.onerror = null;
-      img.src = 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 160"><circle cx="80" cy="80" r="70" fill="%231e293b" stroke="%2310b981" stroke-width="6"/><text x="80" y="85" font-size="64" text-anchor="middle" dominant-baseline="central">🐱</text><text x="80" y="130" font-size="14" font-weight="bold" fill="%23fbbf24" text-anchor="middle">BATTER</text></svg>';
-    }
-
-    // ==========================================
-    // 4. 身体エンジン解説ポップアップ
-    // ==========================================
-    const ENGINE_DETAILS = {
+    const ENGINE_DATA = {
       schema: {
         title: "🕹️ じぶん操作力 (脳内GPS)",
-        desc: "目隠し足踏みで測る「脳内の身体マップ」の正確さです。頭で思った位置に手足やバットをピタッと通せる能力を表します。",
-        baseball: "ズレが少ないほどコースごとの空振りが消え、バットの芯で捉えた打球が連発します！"
+        effect: "思った通りにバットがピタッと通るから、空振りが消えて芯ヒットを連発できる！",
+        advice: "頭の位置とスイング軌道のズレを無くし、空間内でのボール把握力を最高に高めます。"
       },
       flex: {
-        title: "🏹 飛距離・球速のしなり",
-        desc: "胸椎（背骨）の回旋・伸展のしなやかさです。身体をムチのように使ってパワーを蓄える可動域を表します。",
-        baseball: "背中が回ると大きなタメが作れ、柵越えホームランの弾道と糸を引く剛速球を生み出します！"
+        title: "🏹 飛距離・球速のしなり (背骨の回旋)",
+        effect: "背骨が回ればムチのようにしなって、打球がグンと伸び＆剛速球が唸る！",
+        advice: "現在38°でロック中！あと12°アンロックすれば、下半身のパワーが100%ボールに伝わります。"
       },
       balance: {
-        title: "⚓ 崩れない鉄壁の軸足",
-        desc: "片足立ちでグラつかない支持力です。体重移動の勢いを軸足・前足でしっかり受け止める土台の強さを表します。",
-        baseball: "軸がブレないため、緩急や変化球に泳がされず、どんな球でも力負けせずに叩けます！"
+        title: "⚓ 崩れない鉄壁の軸足 (一本足の土台)",
+        effect: "変化球に泳がされず、どんなコースでも強い打球が打てる！",
+        advice: "25秒キープを達成！すでにマスター級の土台が完成しています。"
       },
       spring: {
-        title: "💥 インパクト爆発バネ",
-        desc: "前足でガツンと急ブレーキをかけて回転に変換する地面反力（急停止バネ）のパワーです。",
-        baseball: "インパクトの瞬間にエネルギーがボールへ100%伝わり、打球初速が跳ね上がり剛速球が走ります！"
+        title: "💥 インパクト爆発バネ (地面反力)",
+        effect: "前足ブレーキでガツンと力を止め、剛球を打ち返しレーザービームを刺す！",
+        advice: "踏み込みの急停止ストップによって、回転速度を最大まで加速させます。"
       }
     };
 
-    function openEngineDetail(key) {
-      playButtonSound();
-      const info = ENGINE_DETAILS[key];
-      if (!info) return;
+    const DIALOGUES = [
+      "バットの芯で捉える感覚、研ぎ澄まそうぜ！💬",
+      "今日も鋭いスイングと剛速球を撮ろうぜ！🔥",
+      "昨日のストレッチで、背中のしなりがアップしてるぞ！🏹",
+      "軸足でしっかりタメて、一気に爆発させよう！💥",
+      "頭をブレさせない！目線をピタッとロックだ！👀",
+      "1分間の自主練が、明日の柵越えホームランを作るぜ！⚾"
+    ];
 
-      document.getElementById('engine-modal-title').textContent = info.title;
-      document.getElementById('engine-modal-desc').textContent = info.desc;
-      document.getElementById('engine-modal-baseball').textContent = info.baseball;
-      openModal('engine-modal');
-    }
+    let currentProfile = {};
 
-    // ==========================================
-    // 5. 設定プロファイル管理
-    // ==========================================
-    function openSettingsModal() {
-      playButtonSound();
+    function loadUserProfile() {
       try {
-        const saved = JSON.parse(localStorage.getItem('baseball_user_profile') || '{}');
-        document.getElementById('input-prof-name').value = saved.name || DEFAULT_PROFILE.name;
-        document.getElementById('input-prof-team').value = saved.team || DEFAULT_PROFILE.team;
-        document.getElementById('input-prof-height').value = saved.height || DEFAULT_PROFILE.height;
-        document.getElementById('input-prof-level').value = saved.level || DEFAULT_PROFILE.level;
-      } catch (e) {}
-      openModal('settings-modal');
+        const saved = localStorage.getItem('baseball_user_profile');
+        currentProfile = saved ? JSON.parse(saved) : { ...DEFAULT_PROFILE };
+      } catch(e) {
+        currentProfile = { ...DEFAULT_PROFILE };
+      }
+      renderUserProfileUI();
     }
 
-    function saveUserProfile() {
-      playButtonSound();
-      const name = document.getElementById('input-prof-name').value.trim() || DEFAULT_PROFILE.name;
-      const team = document.getElementById('input-prof-team').value.trim() || DEFAULT_PROFILE.team;
-      const height = parseInt(document.getElementById('input-prof-height').value) || DEFAULT_PROFILE.height;
-      const level = parseInt(document.getElementById('input-prof-level').value) || DEFAULT_PROFILE.level;
-
-      try {
-        const current = JSON.parse(localStorage.getItem('baseball_user_profile') || '{}');
-        const updated = { ...DEFAULT_PROFILE, ...current, name, team, height, level };
-        localStorage.setItem('baseball_user_profile', JSON.stringify(updated));
-        localStorage.setItem('baseball_team_id', team);
-        applyProfileUI(updated);
-        showToast("✅ 設定を保存しました！");
-      } catch (e) {}
-      closeModal('settings-modal');
+    function renderUserProfileUI() {
+      document.getElementById('user-rank-badge').textContent = currentProfile.rank || "ゴールドⅠ";
+      document.getElementById('user-trophy-text').textContent = `${currentProfile.trophies || 1450} / 1600`;
+      document.getElementById('user-streak-text').textContent = `${currentProfile.streak || 5}日連！`;
+      document.getElementById('player-label-name').textContent = `👤 ${currentProfile.name || "タイガ"} (Lv.${currentProfile.level || 14})`;
+      
+      const pct = Math.min(100, Math.max(0, ((currentProfile.trophies || 1450) / 1600) * 100));
+      document.getElementById('trophy-progress').style.width = `${pct}%`;
     }
 
     // ==========================================
-    // 6. ユーティリティ（モーダル・トースト）
+    // 3. アバタータップ・スイング＆キラーン演出
+    // ==========================================
+    let isActionPlaying = false;
+
+    function triggerAvatarSwingAction() {
+      if (isActionPlaying) return;
+      isActionPlaying = true;
+
+      // 1. サウンド再生
+      playSlashSound();
+
+      // 2. キャラクター踏み込み＆スイング
+      const charWrapper = document.getElementById('character-wrapper');
+      charWrapper.classList.remove('swinging');
+      void charWrapper.offsetWidth; // リフロー強制
+      charWrapper.classList.add('swinging');
+
+      // 3. 目がキラーン！閃光
+      const eyeL = document.getElementById('eye-flash-left');
+      const eyeR = document.getElementById('eye-flash-right');
+      eyeL.classList.remove('flash');
+      eyeR.classList.remove('flash');
+      void eyeL.offsetWidth;
+      eyeL.classList.add('flash');
+      eyeR.classList.add('flash');
+
+      // 4. 三日月スラッシュ光弧
+      const slash = document.getElementById('slash-effect');
+      slash.classList.remove('active');
+      void slash.offsetWidth;
+      slash.classList.add('active');
+
+      // 5. ランダムセリフ更新
+      const bubble = document.getElementById('character-dialogue');
+      const randomMsg = DIALOGUES[Math.floor(Math.random() * DIALOGUES.length)];
+      bubble.textContent = randomMsg;
+      bubble.style.animation = 'none';
+      void bubble.offsetWidth;
+      bubble.style.animation = 'popBubble 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
+
+      setTimeout(() => {
+        isActionPlaying = false;
+        charWrapper.classList.remove('swinging');
+      }, 400);
+    }
+
+    // ==========================================
+    // 4. モーダル操作・設定・解説
     // ==========================================
     function openModal(id) {
+      playTapSound();
       const modal = document.getElementById(id);
-      if (modal) {
-        modal.classList.remove('hidden');
-        modal.classList.add('flex');
+      if (modal) modal.classList.add('active');
+
+      if (id === 'carte-modal') {
+        renderCarteSummary();
       }
     }
 
     function closeModal(id) {
-      playButtonSound();
+      playTapSound();
       const modal = document.getElementById(id);
-      if (modal) {
-        modal.classList.remove('flex');
-        modal.classList.add('hidden');
+      if (modal) modal.classList.remove('active');
+    }
+
+    function closeModalOnBackdrop(e, id) {
+      if (e.target.id === id) {
+        closeModal(id);
       }
     }
 
-    function showToast(text) {
-      const toast = document.getElementById('toast');
-      toast.textContent = text;
-      toast.style.opacity = '1';
-      setTimeout(() => {
-        toast.style.opacity = '0';
-      }, 2000);
+    function showEngineExplanation(key) {
+      const data = ENGINE_DATA[key];
+      if (!data) return;
+      playTapSound();
+      document.getElementById('expl-title').textContent = data.title;
+      document.getElementById('expl-baseball-effect').textContent = `⚾ ${data.effect}`;
+      document.getElementById('expl-advice').textContent = `💡 ${data.advice}`;
+      openModal('explanation-modal');
     }
 
-    function openSingleTest(testType) {
-      playButtonSound();
-      showToast("🚀 測定モジュールへ接続中...");
-      setTimeout(() => {
-        closeModal('test-dock-modal');
-        // 将来のbody_tests.htmlへのルーティング
-        window.location.href = "body_tests.html?test=" + testType;
-      }, 600);
+    function renderCarteSummary() {
+      const container = document.getElementById('carte-summary-container');
+      container.innerHTML = '';
+
+      let battingRecords = [];
+      let pitchingRecords = [];
+      try {
+        battingRecords = JSON.parse(localStorage.getItem('batting_ai_records_v1') || '[]');
+        pitchingRecords = JSON.parse(localStorage.getItem('pitching_ai_records_v1') || '[]');
+      } catch(e) {}
+
+      if (battingRecords.length === 0 && pitchingRecords.length === 0) {
+        container.innerHTML = `
+          <div class="text-center py-6 text-slate-500">
+            <span class="text-3xl block mb-2">📊</span>
+            まだ測定データがありません。<br>
+            下の【打撃AI】や【投球AI】で今日のフォームを撮影してみよう！
+          </div>
+        `;
+        return;
+      }
+
+      if (battingRecords.length > 0) {
+        const r = battingRecords[0];
+        container.innerHTML += `
+          <div class="bg-slate-950 p-2.5 rounded-xl border border-emerald-500/40">
+            <div class="flex items-center justify-between font-black text-emerald-400 mb-1">
+              <span>🏏 直近の打撃AI解析 (${r.date})</span>
+              <span class="text-[10px] text-slate-400">${r.mode === 'SIDE' ? '横向き' : '正面'}</span>
+            </div>
+            <p class="text-slate-300">捻転差: <b>${r.metrics?.twist ? (r.metrics.twist >= 0 ? '+' : '') + r.metrics.twist + '°' : '--'}</b> / 前膝屈曲: <b>${r.metrics?.impactKneeFlex || '--'}°</b></p>
+          </div>
+        `;
+      }
+
+      if (pitchingRecords.length > 0) {
+        const r = pitchingRecords[0];
+        container.innerHTML += `
+          <div class="bg-slate-950 p-2.5 rounded-xl border border-sky-500/40">
+            <div class="flex items-center justify-between font-black text-sky-400 mb-1">
+              <span>⚾ 直近の投球AI解析 (${r.date})</span>
+            </div>
+            <p class="text-slate-300">前膝ブレーキ: <b>${r.metrics?.kneeBrake || '--'}°</b> / リリース高: <b>${r.metrics?.releaseH || '--'}cm</b></p>
+          </div>
+        `;
+      }
     }
 
-    // 初期化実行
-    window.addEventListener('DOMContentLoaded', () => {
-      loadData();
+    function saveProfileSettings() {
+      playTapSound();
+      const name = document.getElementById('input-player-name').value.trim() || currentProfile.name;
+      const team = document.getElementById('input-team-name').value.trim() || currentProfile.team;
+      const level = parseInt(document.getElementById('input-player-level').value, 10) || currentProfile.level;
+
+      currentProfile.name = name;
+      currentProfile.team = team;
+      currentProfile.level = level;
+
+      try {
+        localStorage.setItem('baseball_user_profile', JSON.stringify(currentProfile));
+        localStorage.setItem('baseball_team_id', team);
+      } catch(e) {}
+
+      renderUserProfileUI();
+      closeModal('settings-modal');
+    }
+
+    // ==========================================
+    // 5. 起動時の初期化イベント
+    // ==========================================
+    document.addEventListener('DOMContentLoaded', () => {
+      loadUserProfile();
+
+      // アバタータップ
+      const avatarArea = document.getElementById('avatar-clickable-area');
+      avatarArea.addEventListener('click', triggerAvatarSwingAction);
+      avatarArea.addEventListener('touchstart', (e) => {
+        e.preventDefault();
+        triggerAvatarSwingAction();
+      }, { passive: false });
+
+      // 設定モーダル展開
+      document.getElementById('btn-open-settings').addEventListener('click', () => {
+        document.getElementById('input-player-name').value = currentProfile.name || "";
+        document.getElementById('input-team-name').value = currentProfile.team || "";
+        document.getElementById('input-player-level').value = currentProfile.level || 14;
+        openModal('settings-modal');
+      });
+
+      // ボタンタップ音の付与
+      document.querySelectorAll('.btn-3d').forEach(btn => {
+        btn.addEventListener('click', () => playTapSound());
+      });
     });
   </script>
 </body>
